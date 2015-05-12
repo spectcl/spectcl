@@ -162,14 +162,18 @@ All tests are written with [vows][4]:
 
 ## Authors
 
-Forked from [nodejitsu/nexpect][5] by [Elijah Insua][6] [Marak Squires][7], and [Charlie Robbins][8].
+[Greg Cochard][5] and [Ryan Milbourne][6]
+
+Originally forked from [nodejitsu/nexpect][7] by [Elijah Insua][8] [Marak Squires][9], and [Charlie Robbins][10].
 
 [0]: http://search.cpan.org/~rgiersig/Expect-1.21/Expect.pod
 [1]: http://pexpect.sourceforge.net/pexpect.html
 [2]: https://github.com/spectcl/spectcl/tree/master/examples
 [3]: https://github.com/spectcl/spectcl/tree/master/test/spectcl-test.js
 [4]: http://vowsjs.org
-[5]: http://github.com/nodejitsu/nexpect
-[6]: http://github.com/tmpvar
-[7]: http://github.com/marak
-[8]: http://github.com/indexzero
+[5]: https://github.com/gcochard
+[6]: https://github.com/ryanbmilbourne
+[7]: http://github.com/nodejitsu/nexpect
+[8]: http://github.com/tmpvar
+[9]: http://github.com/marak
+[10]: http://github.com/indexzero
