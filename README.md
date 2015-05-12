@@ -1,26 +1,26 @@
-# nexpect
+# spectcl
 
-`nexpect` is a node.js module for spawning child applications (such as ssh) and
-seamlessly controlling them using javascript callbacks. nexpect is based on the
+`spectcl` is a node.js module for spawning child applications (such as ssh) and
+seamlessly controlling them using javascript callbacks. spectcl is based on the
 ideas of the [expect][0] library by Don Libes and the [pexpect][1] library by
 Noah Spurrier.
 
 ## Motivation
 
-node.js has good built in control for spawning child processes. `nexpect` builds
+node.js has good built in control for spawning child processes. `spectcl` builds
 on these core methods and allows developers to easily pipe data to child
-processes and assert the expected response. `nexpect` also chains, so you can
+processes and assert the expected response. `spectcl` also chains, so you can
 compose complex terminal interactions.
 
 ## Installation
 
 ``` bash
-  $ npm install --save nexpect
+  $ npm install --save spectcl
 ```
 
 ## Usage
 
-### require('nspawn')
+### require('spectcl')
 
 The module exposes a single function, `.spawn`.
 
@@ -42,7 +42,7 @@ The module exposes a single function, `.spawn`.
     process.
 
 
-Top-level entry point for `nexpect` that liberally parses the arguments
+Top-level entry point for `spectcl` that liberally parses the arguments
 and then returns a new chain with the specified `command`, `params`, and `options`.
 
 ### function expect (expectation)
@@ -98,9 +98,9 @@ Runs the `context` against the specified `context.command` and
 Lets take a look at some sample usage:
 
 ``` js
-  var nexpect = require('nexpect');
+  var spectcl = require('spectcl');
 
-  nexpect.spawn("echo", ["hello"])
+  spectcl.spawn("echo", ["hello"])
          .expect("hello")
          .run(function (err, stdout, exitcode) {
            if (!err) {
@@ -108,7 +108,7 @@ Lets take a look at some sample usage:
            }
          });
 
-  nexpect.spawn("ls -la /tmp/undefined", { stream: 'stderr' })
+  spectcl.spawn("ls -la /tmp/undefined", { stream: 'stderr' })
          .expect("No such file or directory")
          .run(function (err) {
            if (!err) {
@@ -116,7 +116,7 @@ Lets take a look at some sample usage:
            }
          });
 
-  nexpect.spawn("node --interactive")
+  spectcl.spawn("node --interactive")
          .expect(">")
          .sendline("console.log('testing')")
          .expect("testing")
@@ -130,7 +130,7 @@ Lets take a look at some sample usage:
            }
          });
 
-  emitter = nexpect.spawn("node --interactive")
+  emitter = spectcl.spawn("node --interactive")
          .run(function (err) {
            if (!err) {
              console.log("node process started, console logged, process exited");
@@ -162,13 +162,14 @@ All tests are written with [vows][4]:
 
 ## Authors
 
-[Elijah Insua][5] [Marak Squires][6], and [Charlie Robbins][7].
+Forked from [nodejitsu/nexpect][5] by [Elijah Insua][6] [Marak Squires][7], and [Charlie Robbins][8].
 
 [0]: http://search.cpan.org/~rgiersig/Expect-1.21/Expect.pod
 [1]: http://pexpect.sourceforge.net/pexpect.html
-[2]: https://github.com/nodejitsu/nexpect/tree/master/examples
-[3]: https://github.com/nodejitsu/nexpect/tree/master/test/nexpect-test.js
+[2]: https://github.com/spectcl/spectcl/tree/master/examples
+[3]: https://github.com/spectcl/spectcl/tree/master/test/spectcl-test.js
 [4]: http://vowsjs.org
-[5]: http://github.com/tmpvar
-[6]: http://github.com/marak
-[7]: http://github.com/indexzero
+[5]: http://github.com/nodejitsu/nexpect
+[6]: http://github.com/tmpvar
+[7]: http://github.com/marak
+[8]: http://github.com/indexzero

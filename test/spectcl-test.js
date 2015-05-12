@@ -1,5 +1,5 @@
 /*
- * nexpect-test.js: Tests for the `nexpect` module.
+ * spectcl-test.js: Tests for the `spectcl` module.
  *
  * (C) 2011, Elijah Insua, Marak Squires, Charlie Robbins.
  *
@@ -9,7 +9,7 @@ var assert = require('assert'),
     path = require('path'),
     vows = require('vows'),
     spawn = require('child_process').spawn,
-    nexpect = require('../lib/nexpect');
+    spectcl = require('../lib/spectcl');
 
 function assertSpawn (expect) {
   return {
@@ -34,28 +34,26 @@ function assertError (expect) {
   };
 }
 
-vows.describe('nexpect').addBatch({
-  "When using the nexpect module": {
+vows.describe('spectcl').addBatch({
+  "When using the spectcl module": {
     "it should have the correct methods defined": function () {
-      assert.isFunction(nexpect.spawn);
-      assert.isObject(nexpect.nspawn);
-      assert.isFunction(nexpect.nspawn.spawn);
+      assert.isFunction(spectcl.spawn);
     },
     "spawning": {
       "`echo hello`": assertSpawn(
-        nexpect.spawn("echo", ["hello"])
+        spectcl.spawn("echo", ["hello"])
                .expect("hello")
       ),
       "`ls -l /tmp/undefined`": assertSpawn(
-        nexpect.spawn("ls -la /tmp/undefined", { stream: 'stderr' })
+        spectcl.spawn("ls -la /tmp/undefined", { stream: 'stderr' })
                .expect("No such file or directory")
       ),
       "a command that does not exist": assertError(
-        nexpect.spawn("idontexist")
+        spectcl.spawn("idontexist")
                .expect("This will never work")
       ),
       "and using the sendline() method": assertSpawn(
-        nexpect.spawn("node --interactive")
+        spectcl.spawn("node --interactive")
               .expect(">")
               .sendline("console.log('testing')")
               .expect("testing")
@@ -63,7 +61,7 @@ vows.describe('nexpect').addBatch({
       ),
       "and using the event driven method": {
           "should respond with no error": function () {
-            child = nexpect.spawn('node', ['--interactive']);
+            child = spectcl.spawn('node', ['--interactive']);
             child.run(function(err,stdout,exitcode){
                 assert.isTrue(!err);
                 assert.isArray(stdout);
@@ -80,13 +78,13 @@ vows.describe('nexpect').addBatch({
       },
       "and using the expect() method": {
         "when RegExp expectation is met": assertSpawn(
-          nexpect.spawn("echo", ["hello"])
+          spectcl.spawn("echo", ["hello"])
                  .expect(/^hello$/)
         ),
       },
       "and using the wait() method": {
         "when assertions are met": assertSpawn(
-          nexpect.spawn(path.join(__dirname, 'fixtures', 'prompt-and-respond'))
+          spectcl.spawn(path.join(__dirname, 'fixtures', 'prompt-and-respond'))
                  .wait('first')
                  .sendline('first-prompt')
                  .expect('first-prompt')
@@ -95,7 +93,7 @@ vows.describe('nexpect').addBatch({
                  .expect('second-prompt')
         ),
         "when the last assertion is never met": assertError(
-          nexpect.spawn(path.join(__dirname, 'fixtures', 'prompt-and-respond'))
+          spectcl.spawn(path.join(__dirname, 'fixtures', 'prompt-and-respond'))
                  .wait('first')
                  .sendline('first-prompt')
                  .expect('first-prompt')
@@ -105,21 +103,21 @@ vows.describe('nexpect').addBatch({
         )
       },
       "when options.stripColors is set": assertSpawn(
-        nexpect.spawn(path.join(__dirname, 'fixtures', 'log-colors'), { stripColors: true })
+        spectcl.spawn(path.join(__dirname, 'fixtures', 'log-colors'), { stripColors: true })
                .wait('second has colors')
                .expect('third has colors')
       ),
       "when options.ignoreCase is set": assertSpawn(
-        nexpect.spawn(path.join(__dirname, 'fixtures', 'multiple-cases'), { ignoreCase: true })
+        spectcl.spawn(path.join(__dirname, 'fixtures', 'multiple-cases'), { ignoreCase: true })
                .wait('this has many cases')
                .expect('this also has many cases')
       ),
       "when options.cwd is set": assertSpawn(
-        nexpect.spawn(path.join(__dirname, 'fixtures', 'show-cwd'), { cwd: path.join(__dirname, 'fixtures') })
+        spectcl.spawn(path.join(__dirname, 'fixtures', 'show-cwd'), { cwd: path.join(__dirname, 'fixtures') })
                .wait(path.join(__dirname, 'fixtures'))
       ),
       "when options.env is set": assertSpawn(
-        nexpect.spawn(path.join(__dirname, 'fixtures', 'show-env'), { env: { foo: 'bar', PATH: process.env.PATH }})
+        spectcl.spawn(path.join(__dirname, 'fixtures', 'show-env'), { env: { foo: 'bar', PATH: process.env.PATH }})
           .expect('foo=bar')
       )
     }

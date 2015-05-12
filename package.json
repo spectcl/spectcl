@@ -1,30 +1,31 @@
 {
-  "name": "nexpect",
+  "name": "spectcl",
   "description": "Spawns and interacts with child processes using spawn / expect commands",
-  "version": "0.4.2",
-  "author": "Nodejitsu Inc. <info@nodejitsu.com>",
+  "version": "0.0.1",
+  "author": "Greg Cochard <greg@gregcochard.com>",
   "maintainers": [
-    "indexzero <charlie@nodejitsu.com>",
-    "AvianFlu <avianflu@nodejitsu.com>"
+    "Greg Cochard <greg@gregcochard.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/nodejitsu/nexpect.git"
+    "url": "http://github.com/spectcl/spectcl.git"
   },
   "keywords": [
-    "nexpect",
+    "expect",
     "spawn",
     "child process",
+    "interactive",
     "terminal"
   ],
   "devDependencies": {
     "colors": "0.x.x",
+    "istanbul": "^0.3.14",
     "prompt": "~0.2.11",
     "vows": "~0.5.x"
   },
-  "main": "./lib/nexpect",
+  "main": "./lib/spectcl",
   "scripts": {
-    "test": "vows --spec"
+    "test": "istanbul cover vows -- --spec"
   },
   "engines": {
     "node": ">=0.8.0"
