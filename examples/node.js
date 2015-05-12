@@ -1,13 +1,13 @@
 /*
- * node.js: Simple example for using the `node` interactive terminal with nexpect.
+ * node.js: Simple example for using the `node` interactive terminal with spectcl.
  *
  * (C) 2011, Elijah Insua, Marak Squires, Charlie Robbins.
  *
  */
 
-var nexpect = require('../lib/nexpect');
+var spectcl = require('../lib/spectcl');
 
-nexpect.spawn("node --interactive")
+spectcl.spawn("node --interactive")
        .expect(">")
        .sendline("console.log('testing')")
        .expect("testing")

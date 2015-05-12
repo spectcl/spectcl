@@ -1,13 +1,13 @@
 /*
- * ls-la.js: Simple example for using the `ls -la` command with nexpect.
+ * ls-la.js: Simple example for using the `ls -la` command with spectcl.
  *
  * (C) 2011, Elijah Insua, Marak Squires, Charlie Robbins.
  *
  */
 
-var nexpect = require('../lib/nexpect');
+var spectcl = require('../lib/spectcl');
 
-nexpect.spawn("ls -la /tmp/undefined", { stream: 'stderr' })
+spectcl.spawn("ls -la /tmp/undefined", { stream: 'stderr' })
        .expect("No such file or directory")
        .run(function (err) {
           if (!err) {

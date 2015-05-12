@@ -1,13 +1,13 @@
 /*
- * echo.js: Simple example for using the `echo` command with nexpect.
+ * echo.js: Simple example for using the `echo` command with spectcl.
  *
  * (C) 2011, Elijah Insua, Marak Squires, Charlie Robbins.
  *
  */
 
-var nexpect = require('../lib/nexpect');
+var spectcl = require('../lib/spectcl');
 
-nexpect.spawn("echo", ["hello"])
+spectcl.spawn("echo", ["hello"])
        .expect("hello")
        .run(function (err) {
           if (!err) {

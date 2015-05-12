@@ -1,14 +1,14 @@
 /*
- * wait.js: Simple example for using the `.wait()` method with nexpect.
+ * wait.js: Simple example for using the `.wait()` method with spectcl.
  *
  * (C) 2011, Elijah Insua, Marak Squires, Charlie Robbins.
  *
  */
 
 var path = require('path'),
-    nexpect = require('../lib/nexpect');
+    spectcl = require('../lib/spectcl');
 
-nexpect.spawn(path.join(__dirname, '..', 'test', 'fixtures', 'prompt-and-respond'), { stripColors: true })
+spectcl.spawn(path.join(__dirname, '..', 'test', 'fixtures', 'prompt-and-respond'), { stripColors: true })
        .wait('first')
        .sendline('first-prompt')
        .expect('first-prompt')
