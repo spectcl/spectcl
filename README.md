@@ -1,4 +1,4 @@
-# spectcl [![Build Status](https://travis-ci.org/spectcl/spectcl.svg)](https://travis-ci.org/spectcl/spectcl) [![Coverage Status](https://coveralls.io/repos/spectcl/spectcl/badge.svg)](https://coveralls.io/r/spectcl/spectcl)
+# spectcl [![Build Status](https://travis-ci.org/spectcl/spectcl.svg)](https://travis-ci.org/spectcl/spectcl) [![Coverage Status](https://coveralls.io/repos/spectcl/spectcl/badge.svg)](https://coveralls.io/r/spectcl/spectcl) [![NPM](https://nodei.co/npm/spectcl.png?compact=true)](https://nodei.co/npm/spectcl/)
 
 `spectcl` is a node.js module for spawning child applications (such as ssh) and
 seamlessly controlling them using javascript callbacks. spectcl is based on the
