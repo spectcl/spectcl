@@ -35,7 +35,7 @@ The module exposes a single function, `.spawn`.
   - env: Environment variables for the child process.
   - ignoreCase: Ignores the case of any output from the child process.
   - stripColors: Strips any ANSI colors from the output for `.expect()` and `.wait()` statements.
-  - stream: Expectations can be written against stdout, or stderr, but not both
+  - stream: Expectations can be written against 'stdout', 'stderr', or 'all', which runs expectations against both stdout and stderr
     (defaults to 'stdout')
   - verbose: Writes the stdout for the child process to `process.stdout` of the current process,
     and any data sent with sendline to the `process.stdout` of the current
@@ -55,9 +55,10 @@ Throw an error if it does not.
 The expectation can be a string (the line should contain the expected value as
 a substring) or a RegExp (the line should match the expression).
 
-### function wait (expectation)
+### function wait (expectation, callback)
 
 * expectation {string|RegExp} Output to assert on the target stream
+* callback {Function} **Optional** Callback to be called when output matches stream
 
 Wait for a line of output that matches the expectation, discarding lines
 that do not match.
@@ -66,6 +67,8 @@ Throw an error if no such line was found.
 
 The expectation can be a string (the line should contain the expected value as
 a substring) or a RegExp (the line should match the expression).
+
+The callback will be called for every line that matches the expectation.
 
 ### function sendline (line)
 
