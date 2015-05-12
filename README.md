@@ -1,4 +1,4 @@
-# spectcl
+# spectcl [![Build Status](https://travis-ci.org/spectcl/spectcl.svg)](https://travis-ci.org/spectcl/spectcl) [![Coverage Status](https://coveralls.io/repos/spectcl/spectcl/badge.svg)](https://coveralls.io/r/spectcl/spectcl)
 
 `spectcl` is a node.js module for spawning child applications (such as ssh) and
 seamlessly controlling them using javascript callbacks. spectcl is based on the
@@ -164,7 +164,7 @@ All tests are written with [vows][4]:
 
 [Greg Cochard][5] and [Ryan Milbourne][6]
 
-Originally forked from [nodejitsu/nexpect][7] by [Elijah Insua][8] [Marak Squires][9], and [Charlie Robbins][10].
+Originally forked from [nodejitsu/nexpect][7] by [Elijah Insua][8], [Marak Squires][9], and [Charlie Robbins][10].
 
 [0]: http://search.cpan.org/~rgiersig/Expect-1.21/Expect.pod
 [1]: http://pexpect.sourceforge.net/pexpect.html

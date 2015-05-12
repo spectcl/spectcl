@@ -1,0 +1,19 @@
+language: node_js
+
+node_js:
+  - "0.10"
+  - "0.12"
+  - "iojs"
+
+branches:
+    except:
+        - gh-pages
+        - /^v\d+(\.\d+){2}/
+
+after_script:
+    - if [[ `node --version` == *v0.10* ]]; then cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
+
+sudo: false
+cache:
+  directories:
+    - node_modules

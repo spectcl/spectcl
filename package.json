@@ -19,13 +19,14 @@
   ],
   "devDependencies": {
     "colors": "0.x.x",
+    "coveralls": "^2.11.2",
     "istanbul": "^0.3.14",
     "prompt": "~0.2.11",
     "vows": "~0.5.x"
   },
   "main": "./lib/spectcl",
   "scripts": {
-    "test": "istanbul cover vows -- --spec"
+    "test": "istanbul cover vows -- --spec && istanbul check-coverage --statement 81 --branch 78 --function 88 --line 81"
   },
   "engines": {
     "node": ">=0.8.0"
