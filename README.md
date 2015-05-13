@@ -2,15 +2,15 @@
 
 `spectcl` is a node.js module for spawning child applications (such as ssh) and
 seamlessly controlling them using javascript callbacks. spectcl is based on the
-ideas of the [expect][0] library by Don Libes and the [pexpect][1] library by
+ideas of the [Expect][0] library by Don Libes and the [pexpect][1] library by
 Noah Spurrier.
 
 ## Motivation
 
-node.js has good built in control for spawning child processes. `spectcl` builds
-on these core methods and allows developers to easily pipe data to child
-processes and assert the expected response. `spectcl` also chains, so you can
-compose complex terminal interactions.
+Node.js has good built in control for spawning child processes. `nexpect` built on
+those methods that allowed developers to easily pipe data to child processes and assert the expected response.
+
+`spectl` stands on the shoulders of `nexpect`; one of this module's main goals will be to more closely emulate the Expect extensions built into the TCL language.  Its concentration is going to be to map the functionality and features of the [Expect][0] library as closely as possible, while adhering to a callback-driven control flow.
 
 ## Installation
 
