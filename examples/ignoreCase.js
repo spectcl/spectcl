@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * ignoreCase.js: Simple example for using the `ignoreCase` option with spectcl.
  *

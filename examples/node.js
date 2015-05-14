@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * node.js: Simple example for using the `node` interactive terminal with spectcl.
  *

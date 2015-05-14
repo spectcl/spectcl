@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * echo.js: Simple example for using the `echo` command with spectcl.
  *

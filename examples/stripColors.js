@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * stripColors.js: Simple example for using the `stripColors` option with spectcl.
  *
@@ -14,5 +15,7 @@ spectcl.spawn(path.join(__dirname, '..', 'test', 'fixtures', 'log-colors'), { st
        .run(function (err) {
          if (!err) {
            console.log('colors were ignore, then waited and expected');
+         } else {
+             console.log(err);
          }
        });
