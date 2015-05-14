@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * wait.js: Simple example for using the `.wait()` method with spectcl.
  *
@@ -18,5 +19,7 @@ spectcl.spawn(path.join(__dirname, '..', 'test', 'fixtures', 'prompt-and-respond
        .run(function (err) {
          if (!err) {
            console.log('two prompts were waited and responded to');
+         } else {
+           console.log(err);
          }
        });

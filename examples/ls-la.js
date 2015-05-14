@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * ls-la.js: Simple example for using the `ls -la` command with spectcl.
  *
