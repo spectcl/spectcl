@@ -93,7 +93,7 @@ function execSilent(cmd) {
 function release(type) {
     var newVersion, changes;
 
-    target.test();
+    //target.test();
     echo("Generating new version");
     newVersion = execSilent("npm version " + type).trim();
 
