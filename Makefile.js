@@ -44,21 +44,20 @@ var OPEN_SOURCE_LICENSES = [
 var NODE = "node ", // intentional extra space
     NODE_MODULES = "./node_modules/",
     TEMP_DIR = "./tmp/",
-    BUILD_DIR = "./build/",
-    DOCS_DIR = "../eslint.github.io/docs",
-    SITE_DIR = "../eslint.github.io/",
+    DOCS_DIR = "../spectcl.github.io/docs",
+    SITE_DIR = "../spectcl.github.io/",
 
     // Utilities - intentional extra space at the end of each string
     MOCHA = NODE_MODULES + "mocha/bin/_mocha ",
-    ESLINT = NODE + " bin/eslint.js ",
+    ESLINT = NODE + " " + NODE_MODULES + ".bin/eslint ",
 
     // Files
     MAKEFILE = "./Makefile.js",
     /*eslint-disable no-use-before-define */
     JS_FILES = find("lib/").filter(fileType("js")).join(" "),
-    JSON_FILES = find("conf/").filter(fileType("json")).join(" ") + " .eslintrc",
-    MARKDOWN_FILES_ARRAY = find("docs/").concat(ls(".")).filter(fileType("md")),
-    TEST_FILES = find("tests/lib/").filter(fileType("js")).join(" ");
+    JSON_FILES = ".eslintrc",
+    //MARKDOWN_FILES_ARRAY = find("docs/").concat(ls(".")).filter(fileType("md")),
+    TEST_FILES = find("tests/").filter(fileType("js")).join(" ");
     /*eslint-enable no-use-before-define */
 
 //------------------------------------------------------------------------------
@@ -75,25 +74,6 @@ function fileType(extension) {
     return function(filename) {
         return filename.substring(filename.lastIndexOf(".") + 1) === extension;
     };
-}
-
-/**
- * Generates a static file that includes each rule by name rather than dynamically
- * looking up based on directory. This is used for the browser version of ESLint.
- * @param {string} basedir The directory in which to look for code.
- * @returns {void}
- */
-function generateRulesIndex(basedir) {
-    var output = "module.exports = function() {\n";
-    output += "    var rules = Object.create(null);\n";
-
-    find(basedir + "rules/").filter(fileType("js")).forEach(function(filename) {
-        var basename = path.basename(filename, ".js");
-        output += "    rules[\"" + basename + "\"] = require(\"./rules/" + basename + "\");\n";
-    });
-
-    output += "\n    return rules;\n};";
-    output.to(basedir + "load-rules.js");
 }
 
 /**
@@ -118,14 +98,7 @@ function release(type) {
     newVersion = execSilent("npm version " + type).trim();
 
     echo("Generating changelog");
-    target.changelog();
-
-    // capture changelog
-    changes = execSilent("git diff -U0 CHANGELOG.md");
-
-    // fix changelog to remove diff output
-    changes = changes.split("\n");
-    changes = changes.slice(8, -1);
+    changes = target.changelog();
 
     // add changelog to commit
     exec("git add CHANGELOG.md");
@@ -140,18 +113,18 @@ function release(type) {
 
     // now push the changelog...changes to the tag
     echo("Publishing changes to github release");
-    // this requires a github API token in process.env.ESLINT_GITHUB_TOKEN
+    // this requires a github API token in process.env.SPECTCL_GITHUB_TOKEN
     // it will continue with an error message logged if not set
-    ghGot("repos/eslint/eslint/releases", {
-        body: {
+    ghGot("repos/spectcl/spectcl/releases", {
+        body: JSON.stringify({
             "tag_name": newVersion,
             name: newVersion,
             "target_commitish": "master",
             body: changes
-        },
+        }),
         method: "POST",
         json: true,
-        token: process.env.ESLINT_GITHUB_TOKEN
+        token: process.env.SPECTCL_GITHUB_TOKEN
     }, function(pubErr) {
         if (pubErr) {
             echo("Warning: error when publishing changes to github release: " + pubErr.message);
@@ -159,9 +132,9 @@ function release(type) {
         echo("Publishing to npm");
         exec("npm publish");
 
-        echo("Generating site");
-        target.gensite();
-        target.publishsite();
+        //echo("Generating site");
+        //target.gensite();
+        //target.publishsite();
     });
 }
 
@@ -231,6 +204,7 @@ function getVersionTags() {
  * @returns {object} exec-style exit code object.
  * @private
  */
+/*
 function lintMarkdown(files) {
     var config = {
             default: true,
@@ -259,6 +233,7 @@ function lintMarkdown(files) {
     }
     return { code: returnCode };
 }
+*/
 
 //------------------------------------------------------------------------------
 // Tasks
@@ -284,11 +259,13 @@ target.lint = function() {
         errors++;
     }
 
+    /*
     echo("Validating Markdown Files");
     lastReturn = lintMarkdown(MARKDOWN_FILES_ARRAY);
     if (lastReturn.code !== 0) {
         errors++;
     }
+    */
 
     echo("Validating JavaScript files");
     lastReturn = exec(ESLINT + JS_FILES);
@@ -325,13 +302,6 @@ target.test = function() {
         errors++;
     }
 
-    target.browserify();
-
-    lastReturn = nodeCLI.exec("mocha-phantomjs", "-R dot", "tests/tests.htm");
-    if (lastReturn.code !== 0) {
-        errors++;
-    }
-
     if (errors) {
         exit(1);
     }
@@ -346,10 +316,9 @@ target.docs = function() {
 };
 
 target.gensite = function() {
-    echo("Generating eslint.org");
+    echo("Generating spectcl.org");
 
     var docFiles = [
-        "/rules/",
         "/user-guide/command-line-interface.md",
         "/user-guide/configuring.md",
         "/developer-guide/nodejs-api.md",
@@ -385,8 +354,7 @@ target.gensite = function() {
     // 4. Loop through all files in temporary directory
     find(TEMP_DIR).forEach(function(filename) {
         if (test("-f", filename)) {
-            var rulesUrl = "https://github.com/eslint/eslint/tree/master/lib/rules/";
-            var docsUrl = "https://github.com/eslint/eslint/tree/master/docs/rules/";
+            var docsUrl = "https://github.com/spectcl/spectcl/tree/master/docs/rules/";
 
             var text = cat(filename);
 
@@ -409,37 +377,16 @@ target.gensite = function() {
                 text = text + "\n";
             }
 
-            // 8. Append first version of ESLint rule was added at.
-            if (filename.indexOf("rules/") !== -1 && baseName !== "README.md") {
-                var version = versions[baseName] ? versions[baseName] : getFirstVersionOfFile(path.join("lib/rules", sourceBaseName));
-                versions[baseName] = version;
-
-                if (version) {
-                    text += "\n## Version\n\n";
-                    text += "This rule was introduced in ESLint " + version + ".\n";
-                }
-
-                text += "\n## Resources\n\n";
-                text += "* [Rule source](" + rulesUrl + sourceBaseName + ")\n";
-                text += "* [Documentation source](" + docsUrl + baseName + ")\n";
-            }
-
-            // 9. Update content of the file with changes
+            // 8. Update content of the file with changes
             text.to(filename.replace("README.md", "index.md"));
         }
     });
-    JSON.stringify(versions).to("./versions.json");
 
-    // 10. Copy temorary directory to site's docs folder
+    // 9. Copy temorary directory to site's docs folder
     cp("-rf", TEMP_DIR + "*", DOCS_DIR);
 
-    // 11. Delete temporary directory
+    // 10. Delete temporary directory
     rm("-r", TEMP_DIR);
-
-    // 12. Browserify ESLint
-    target.browserify();
-    cp("-f", "build/eslint.js", SITE_DIR + "js/app/eslint.js");
-    cp("-f", "conf/eslint.json", SITE_DIR + "js/app/eslint.json");
 };
 
 target.publishsite = function() {
@@ -451,39 +398,6 @@ target.publishsite = function() {
     exec("git fetch origin && git rebase origin/master");
     exec("git push origin master");
     cd(currentDir);
-};
-
-target.browserify = function() {
-
-    // 1. create temp and build directory
-    if (!test("-d", TEMP_DIR)) {
-        mkdir(TEMP_DIR);
-    }
-
-    if (!test("-d", BUILD_DIR)) {
-        mkdir(BUILD_DIR);
-    }
-
-    // 2. copy files into temp directory
-    cp("-r", "lib/*", TEMP_DIR);
-
-    // 3. delete the load-rules.js file
-    rm(TEMP_DIR + "load-rules.js");
-
-    // 4. create new load-rule.js with hardcoded requires
-    generateRulesIndex(TEMP_DIR);
-
-    // 5. browserify the temp directory
-    nodeCLI.exec("browserify", "-x espree", TEMP_DIR + "eslint.js", "-o", BUILD_DIR + "eslint.js", "-s eslint");
-
-    // 6. Browserify espree
-    nodeCLI.exec("browserify", "-r espree", "-o", TEMP_DIR + "espree.js");
-
-    // 7. Concatenate the two files together
-    cat(TEMP_DIR + "espree.js", BUILD_DIR + "eslint.js").to(BUILD_DIR + "eslint.js");
-
-    // 8. remove temp directory
-    rm("-r", TEMP_DIR);
 };
 
 target.changelog = function() {
@@ -502,6 +416,11 @@ target.changelog = function() {
     logs = logs.filter(function(line) {
         return line.indexOf("Merge pull request") === -1 && line.indexOf("Merge branch") === -1;
     });
+
+    var output = logs;
+    output.shift(); // get rid of tag name
+    output = output.join("\n"); //and join it into a string
+
     logs.push(""); // to create empty lines
     logs.unshift("");
 
@@ -513,149 +432,7 @@ target.changelog = function() {
     rm("CHANGELOG.tmp");
     rm("CHANGELOG.md");
     mv("CHANGELOG.md.tmp", "CHANGELOG.md");
-};
-
-target.checkRuleFiles = function() {
-
-    echo("Validating rules");
-
-    var eslintConf = require("./conf/eslint.json");
-    var environmentsConf = require("./conf/environments");
-
-    var confRules = {};
-    confRules.default = eslintConf.rules;
-    Object.keys(environmentsConf).forEach(function (env) {
-        confRules[env] = environmentsConf[env].rules;
-    });
-
-    var ruleFiles = find("lib/rules/").filter(fileType("js")),
-        rulesIndexText = cat("docs/rules/README.md"),
-        errors = 0;
-
-    ruleFiles.forEach(function(filename) {
-        var basename = path.basename(filename, ".js");
-        var docFilename = "docs/rules/" + basename + ".md";
-
-        var indexLine = new RegExp("\\* \\[" + basename + "\\].*").exec(rulesIndexText);
-        indexLine = indexLine ? indexLine[0] : "";
-
-
-        function isInConfig(env) {
-            return confRules[env] && confRules[env].hasOwnProperty(basename);
-        }
-
-        function isOffInConfig(env) {
-            var envRule = confRules[env][basename];
-            return envRule === 0 || (envRule && envRule[0] === 0);
-        }
-
-        function isOnInConfig(env) {
-            return !isOffInConfig(env);
-        }
-
-        function isOffInIndex(env) {
-            if (env === "default") {
-                return indexLine.indexOf("(off by default)") !== -1;
-            } else {
-                return indexLine.indexOf("(off by default in the " + env + " environment)") !== -1;
-            }
-        }
-
-        function isOnInIndex(env) {
-            if (env === "default") {
-                return indexLine.indexOf("(off by default)") === -1;
-            } else {
-                return indexLine.indexOf("(on by default in the " + env + " environment)") !== -1;
-            }
-        }
-
-        function hasIdInTitle(id) {
-            var docText = cat(docFilename);
-            var idInTitleRegExp = new RegExp("^# (.*?) \\(" + id + "\\)");
-            return idInTitleRegExp.test(docText);
-        }
-
-        // check for docs
-        if (!test("-f", docFilename)) {
-            console.error("Missing documentation for rule %s", basename);
-            errors++;
-        } else {
-
-            // check for entry in docs index
-            if (rulesIndexText.indexOf("(" + basename + ".md)") === -1) {
-                console.error("Missing link to documentation for rule %s in index", basename);
-                errors++;
-            }
-
-            // check for proper doc format
-            if (!hasIdInTitle(basename)) {
-                console.error("Missing id in the doc page's title of rule %s", basename);
-                errors++;
-            }
-        }
-
-        // check for default configuration
-        if (!isInConfig("default")) {
-            console.error("Missing default setting for %s in eslint.json", basename);
-            errors++;
-        }
-
-        // check that rule is not on in docs but off in default config
-        if (isOnInIndex("default") && isOffInConfig("default")) {
-            console.error("Missing '(off by default)' for rule %s in index", basename);
-            errors++;
-        }
-
-        // check that rule is not off in docs but on in default config
-        if (isOffInIndex("default") && isOnInConfig("default")) {
-            console.error("Rule documentation says that %s is off by default but it is enabled in eslint.json.", basename);
-            errors++;
-        }
-
-        // check rule config for each environment
-        Object.keys(confRules).forEach(function (env) {
-            if (env === "default") {
-                return;
-            }
-
-            // only check if rule has been explicitly set for environment
-            if (isInConfig(env)) {
-
-                // check that rule is not on in docs but off in environment config
-                if (isOnInIndex(env)) {
-                    if (isOffInConfig(env)) {
-                        console.error("Rule documentation says that %s is off in environment %s but it is enabled in eslint.json.", basename, env);
-                        errors++;
-                    }
-
-                // check that rule is not off in docs but on in default config
-                } else if (isOffInIndex(env)) {
-                    if (isOnInConfig(env)) {
-                        console.error("Rule documentation says that %s is on in environment %s but it is disabled in eslint.json.", basename, env);
-                        errors++;
-                    }
-
-                // rule has been overridden in environment but is not in docs
-                } else {
-                    console.error("Missing '(%s by default in the %s environment)' for rule %s in index", isOnInConfig(env) ? "on" : "off", env, basename);
-                    errors++;
-                }
-
-            }
-        });
-
-        // check for tests
-        if (!test("-f", "tests/lib/rules/" + basename + ".js")) {
-            console.error("Missing tests for rule %s", basename);
-            errors++;
-        }
-
-    });
-
-    if (errors) {
-        exit(1);
-    }
-
+    return output;
 };
 
 target.checkLicenses = function() {
@@ -701,47 +478,6 @@ target.checkLicenses = function() {
             exit(1);
         }
     });
-};
-
-function time(cmd, runs, runNumber, results, cb) {
-    var start = process.hrtime();
-    exec(cmd, { silent: true }, function() {
-        var diff = process.hrtime(start),
-            actual = (diff[0] * 1e3 + diff[1] / 1e6); // ms
-
-        results.push(actual);
-        echo("Performance Run #" + runNumber + ":  %dms", actual);
-        if (runs > 1) {
-            time(cmd, runs - 1, runNumber + 1, results, cb);
-        } else {
-            cb(results);
-        }
-    });
-
-}
-
-target.perf = function() {
-    var cpuSpeed = os.cpus()[0].speed,
-        max = PERF_MULTIPLIER / cpuSpeed,
-        cmd = ESLINT + "./tests/performance/jshint.js";
-
-    echo("CPU Speed is %d with multiplier %d", cpuSpeed, PERF_MULTIPLIER);
-
-    time(cmd, 5, 1, [], function(results) {
-        results.sort(function(a, b) {
-            return a - b;
-        });
-
-        var median = results[~~(results.length / 2)];
-
-        if (median > max) {
-            echo("Performance budget exceeded: %dms (limit: %dms)", median, max);
-            exit(1);
-        } else {
-            echo("Performance budget ok:  %dms (limit: %dms)", median, max);
-        }
-    });
-
 };
 
 target.patch = function() {
