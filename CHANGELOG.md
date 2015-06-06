@@ -1,3 +1,6 @@
+v0.0.7 - June 6, 2015
+
+
 v0.0.6 - June 6, 2015
 
 * Docs: Add changelog (Greg Cochard)
