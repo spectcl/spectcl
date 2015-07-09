@@ -1,10 +1,11 @@
 {
   "name": "spectcl",
   "description": "Spawns and interacts with child processes using spawn / expect commands",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Greg Cochard <greg@gregcochard.com>",
   "maintainers": [
-    "Greg Cochard <greg@gregcochard.com>"
+    "Greg Cochard <greg@gregcochard.com>",
+    "Ryan Milbourne <ryanbmilbourne@gmail.com>"
   ],
   "repository": {
     "type": "git",
