@@ -12,21 +12,22 @@
     "url": "http://github.com/spectcl/spectcl.git"
   },
   "keywords": [
-    "expect",
-    "spawn",
     "child process",
+    "expect",
     "interactive",
+    "spawn",
     "terminal"
   ],
   "devDependencies": {
     "colors": "0.x.x",
     "coveralls": "^2.11.2",
     "dateformat": "^1.0.11",
-    "eslint": "^0.22.1",
+    "eslint": "^1.0.0-rc-1",
     "gh-got": "^1.1.0",
     "istanbul": "^0.3.14",
     "markdownlint": "0.0.5",
     "npm-license": "^0.2.3",
+    "pre-git": "^0.6.2",
     "prompt": "~0.2.11",
     "semver": "^4.3.6",
     "shelljs": "^0.3.0",
@@ -35,8 +36,19 @@
   },
   "main": "./lib/spectcl",
   "scripts": {
-    "test": "istanbul cover vows -- --spec && istanbul check-coverage --statement 81 --branch 78 --function 88 --line 81"
+    "test": "istanbul cover vows -- --spec && istanbul check-coverage --statement 81 --branch 78 --function 88 --line 81",
+    "lint": "eslint lib/*.js test/*.js"
   },
+  "pre-commit": [
+    "npm run lint"
+  ],
+  "pre-push": [
+    "npm test"
+  ],
+  "post-merge": [
+    "npm install",
+    "npm test"
+  ],
   "engines": {
     "node": ">=0.8.0"
   },
