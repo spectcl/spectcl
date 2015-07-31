@@ -9,7 +9,6 @@
 var assert = require('assert'),
     path = require('path'),
     vows = require('vows'),
-    spawn = require('child_process').spawn,
     spectcl = require('../lib/spectcl')
 
 function assertSpawn (expect) {
@@ -66,6 +65,7 @@ vows.describe('spectcl').addBatch({
                     child.run(function(err,stdout,exitcode){
                         assert.isTrue(!err)
                         assert.isArray(stdout)
+                        assert.equal(exitcode,0)
                     })
                     child.on('wait',function(data){
                         if(data === '>'){
@@ -81,7 +81,7 @@ vows.describe('spectcl').addBatch({
                 'when RegExp expectation is met': assertSpawn(
                     spectcl.spawn('echo', ['hello'])
                     .expect(/^hello$/)
-                ),
+                )
             },
             'and using the wait() method': {
                 'when assertions are met': assertSpawn(
@@ -105,7 +105,7 @@ vows.describe('spectcl').addBatch({
                 'when a callback is provided and output is matched': {
                     topic: function() {
                         var expect = spectcl.spawn(path.join(__dirname, 'fixtures', 'prompt-and-respond'))
-                          .wait('first', this.callback)
+                        expect.wait('first', this.callback)
                           .sendline('first-prompt')
                           .expect('first-prompt')
                           .wait('second')
@@ -114,6 +114,7 @@ vows.describe('spectcl').addBatch({
                     },
                     'should call callback': function(matchData, b) {
                         assert.ok(matchData.indexOf('first') > 0, "Found 'first' in output")
+                        assert.equal(b,undefined)
                     }
                 },
                 'when a callback is provided and output is not matched': {
@@ -124,7 +125,7 @@ vows.describe('spectcl').addBatch({
                             }
 
                         var expect = spectcl.spawn(path.join(__dirname, 'fixtures', 'prompt-and-respond'))
-                          .wait('first')
+                        expect.wait('first')
                           .sendline('first-prompt')
                           .expect('first-prompt')
                           .wait('second')
@@ -133,6 +134,7 @@ vows.describe('spectcl').addBatch({
                     },
                     'should not call callback': function(args, a) {
                         assert.equal(args.hasRunCallback, false, 'Should not have run callback')
+                        assert.ok(a)
                     }
                 }
             },
