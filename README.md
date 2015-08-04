@@ -173,7 +173,7 @@ All tests are written with [vows][4]:
 
 Originally forked from [nodejitsu/nexpect][7] by [Elijah Insua][8], [Marak Squires][9], and [Charlie Robbins][10].
 
-[0]: http://search.cpan.org/~rgiersig/Expect-1.21/Expect.pod
+[0]: http://www.tcl.tk/man/expect5.31/expect.1.html
 [1]: http://pexpect.sourceforge.net/pexpect.html
 [2]: https://github.com/spectcl/spectcl/tree/master/examples
 [3]: https://github.com/spectcl/spectcl/tree/master/test/spectcl-test.js
