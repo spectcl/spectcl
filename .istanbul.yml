@@ -1,7 +1,7 @@
 {
     "reporting": {
         "dir": "./coverage",
-        "reports": [ "html", "cobertura" ],
+        "reports": [ "lcov", "html", "cobertura" ],
         "watermarks": {
             "statements": [80, 90],
             "lines": [80, 90],
