@@ -115,6 +115,18 @@ describe('spectcl', function(){
 
         })
 
+        it('should emit error when given non-even expectations array', function(done){
+            var session = new spectcl()
+            session.spawn('echo hello')
+            session.on('error', function(err){
+                assert.equal('cannot call expect with array that is odd in length', err.message, 'received unexpected error')
+                done()
+            })
+            session.expect([
+                'foo', function(){return}, 'bar'
+            ])
+        })
+
         it('should emit error when calling expect() when already expecting', function(done){
             var session = new spectcl()
             session.spawn('echo hello')
