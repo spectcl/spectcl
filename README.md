@@ -24,144 +24,55 @@ as closely as possible, while adhering to an event-driven control flow.
 
 ## Usage
 
-### require('spectcl')
-
-The module exposes a single function, `.spawn`.
-
-### function spawn (command, [params], [options])
-
-* command {string|Array} The command that you wish to spawn, a string will be
-  split on `' '` to find the params if params not provided (so do not use the
-  string variant if any arguments have spaces in them)
-* params {Array} **Optional** Argv to pass to the child process
-* options {Object} **Optional** An object literal which may contain
-  - cwd: Current working directory of the child process.
-  - env: Environment variables for the child process.
-  - ignoreCase: Ignores the case of any output from the child process.
-  - stripColors: Strips any ANSI colors from the output for `.expect()` and `.wait()` statements.
-  - stream: Expectations can be written against 'stdout', 'stderr', or 'all', which runs expectations against both stdout and stderr
-    (defaults to 'stdout')
-  - verbose: Writes the stdout for the child process to `process.stdout` of the current process,
-    and any data sent with sendline to the `process.stdout` of the current
-    process.
-
-
-Top-level entry point for `spectcl` that liberally parses the arguments
-and then returns a new chain with the specified `command`, `params`, and `options`.
-
-### function expect (expectation)
-
-* expectation {string|RegExp} Output to assert on the target stream
-
-Expect that the next line of output matches the expectation.
-Throw an error if it does not.
-
-The expectation can be a string (the line should contain the expected value as
-a substring) or a RegExp (the line should match the expression).
-
-### function wait (expectation, callback)
-
-* expectation {string|RegExp} Output to assert on the target stream
-* callback {Function} **Optional** Callback to be called when output matches stream
-
-Wait for a line of output that matches the expectation, discarding lines
-that do not match.
-
-Throw an error if no such line was found.
-
-The expectation can be a string (the line should contain the expected value as
-a substring) or a RegExp (the line should match the expression).
-
-The callback will be called for every line that matches the expectation.
-
-### function sendline (line)
-
-* line {string} Output to write to the child process.
-
-Adds a write line to `context.process.stdin` to the `context.queue`
-for the current chain.
-
-### function sendEof ()
-
-Close child's stdin stream, let the child know there are no more data coming.
-
-This is useful for testing apps that are using inquirer,
-as `inquirer.prompt()` calls `stdin.resume()` at some point,
-which causes the app to block on input when the input stream is a pipe.
-
-### function run (callback)
-
-* callback {function} Called when child process closes, with arguments
-  * err {Error|null} Error if any occurred
-  * output {Array} Array of lines of output examined
-  * exit {Number|String} Numeric exit code, or String name of signal
-
-Runs the `context` against the specified `context.command` and
-`context.params`.
-
-
-## Example
-
-Lets take a look at some sample usage:
-
 ``` js
-  var spectcl = require('spectcl');
+var spectcl = require('spectcl')
+  , session = new spectcl()
 
-  spectcl.spawn("echo", ["hello"])
-         .expect("hello")
-         .run(function (err, stdout, exitcode) {
-           if (!err) {
-             console.log("hello was echoed");
-           }
-         });
-
-  spectcl.spawn("ls -la /tmp/undefined", { stream: 'stderr' })
-         .expect("No such file or directory")
-         .run(function (err) {
-           if (!err) {
-             console.log("checked that file doesn't exists");
-           }
-         });
-
-  spectcl.spawn("node --interactive")
-         .expect(">")
-         .sendline("console.log('testing')")
-         .expect("testing")
-         .sendline("process.exit()")
-         .run(function (err) {
-           if (!err) {
-             console.log("node process started, console logged, process exited");
-           }
-           else {
-             console.log(err)
-           }
-         });
-
-  emitter = spectcl.spawn("node --interactive")
-         .run(function (err) {
-           if (!err) {
-             console.log("node process started, console logged, process exited");
-           }
-           else {
-             console.log(err)
-           }
-         });
-         emitter.expect(">");
-         emitter.on('wait',function(data){
-           if(data === '>'){
-             emitter.sendline("console.log('testing')")
-             .expect("testing")
-           } else if(data === 'testing') {
-             emitter.sendline("process.exit()")
-           }
-         });
+session.spawn('node --interactive')
+session.expect([
+    '>', function(){
+        session.send('process.version\n')
+        session.expect([
+            '>', function(){
+                session.send('process.exit()\n')
+                var version = session.expect_out.buffer.match(/(v[0-9]\.[0-9]+\.[0-9]+)/)[1]
+                console.log('version is: %s', version)
+            }
+        ]}
+    }
+])
 ```
 
-If you are looking for more examples take a look at the [examples][2], and [tests][3].
+Usage is similar to Expect, but not identical.  
+In the example above, we spawn a `node` interactive interpreter, 
+have it output the value of `process.version`, 
+capture the results from the expect_out buffer, and close the session, printing the version.
+
+Compare to this TCL Expect block:
+
+``` tcl
+package require Expect
+
+log_user 0
+
+spawn node "--interactive"
+expect ">" {
+    exp_send "process.version\n"
+}
+expect ">" {
+    exp_send "process.exit()\n"
+    regexp {(v[0-9]\.[0-9]+\.[0-9]+)} $expect_out(buffer) -> version
+    puts "version is: $version"
+}
+```
+
+## API Reference
+
+Watch this space. (See #2)
 
 ## Tests
 
-All tests are written with [vows][4]:
+All tests are written with [mocha][4]:
 
 ``` bash
   $ npm test
@@ -176,8 +87,8 @@ Originally forked from [nodejitsu/nexpect][7] by [Elijah Insua][8], [Marak Squir
 [0]: http://www.tcl.tk/man/expect5.31/expect.1.html
 [1]: http://pexpect.sourceforge.net/pexpect.html
 [2]: https://github.com/spectcl/spectcl/tree/master/examples
-[3]: https://github.com/spectcl/spectcl/tree/master/test/spectcl-test.js
-[4]: http://vowsjs.org
+[3]: https://github.com/spectcl/spectcl/tree/master/test/spectcl.js
+[4]: http://mochajs.org
 [5]: https://github.com/gcochard
 [6]: https://github.com/ryanbmilbourne
 [7]: http://github.com/nodejitsu/nexpect
