@@ -37,17 +37,13 @@ describe('spectcl', function(){
             session.spawn('echo', ['hello'])
         })
 
-        it('should rx error message from child when command cannot be spawned', function(done){
+        it('should emit `error` event when command cannot be spawned', function(done){
             var session = new spectcl()
-            session.on('error', function(){
-                assert.fail('','','unexpected error event fired')
+            session.on('error', function(err){
+                assert.notEqual(null, err, 'recieved null error object')
+                done()
             })
             session.spawn('defnotacommand')
-            session.expect([
-                'No such file or directory', function(){
-                    done()
-                }
-            ])
         })
 
         it('should emit `close` event when child closes', function(done){
@@ -123,7 +119,7 @@ describe('spectcl', function(){
                 done()
             })
             session.expect([
-                'foo', function(){return}, 'bar'
+                'foo', function(){}, 'bar'
             ])
         })
 
