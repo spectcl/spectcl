@@ -1,0 +1,17 @@
+{
+    "reporting": {
+        "dir": "./coverage",
+        "reports": [ "lcov", "html", "cobertura" ],
+        "watermarks": {
+            "statements": [80, 90],
+            "lines": [80, 90],
+            "functions": [80, 90],
+            "branches": [80, 90]
+        },
+        "report-config": {
+            "cobertura": {
+                "file": "coverage.xml"
+            }
+        }
+    }
+}

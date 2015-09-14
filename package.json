@@ -1,7 +1,7 @@
 {
   "name": "spectcl",
   "description": "Spawns and interacts with child processes using spawn / expect commands",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "author": "Greg Cochard <greg@gregcochard.com>",
   "maintainers": [
     "Greg Cochard <greg@gregcochard.com>",
@@ -26,17 +26,18 @@
     "gh-got": "^1.1.0",
     "istanbul": "^0.3.14",
     "markdownlint": "0.0.5",
+    "mocha": "^2.3.2",
     "npm-license": "^0.2.3",
     "pre-git": "^0.6.2",
     "prompt": "~0.2.11",
     "semver": "^4.3.6",
     "shelljs": "^0.3.0",
     "shelljs-nodecli": "^0.1.1",
-    "vows": "~0.5.x"
+    "sinon": "^1.16.1"
   },
   "main": "./lib/spectcl",
   "scripts": {
-    "test": "istanbul cover vows -- --spec && istanbul check-coverage --statement 81 --branch 78 --function 88 --line 81",
+    "test": "istanbul cover node_modules/mocha/bin/_mocha",
     "lint": "eslint lib/*.js test/*.js"
   },
   "pre-commit": [
@@ -52,5 +53,8 @@
   "engines": {
     "node": ">=0.8.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^2.2.0"
+  }
 }
