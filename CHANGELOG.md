@@ -1,3 +1,12 @@
+v0.1.0 - September 14 2015
+
+* Rework of API to support more Expect-like syntax.
+* Build: Modify tests to use mocha. 
+* Build: Add `.istanbul.yml` with coverage thresholds.
+* Build: Write new tests that use the new control flow.
+* Docs: Update README.md.
+
+
 v0.0.7 - June 6, 2015
 
 
