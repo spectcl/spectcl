@@ -12,7 +12,7 @@ describe('spectcl', function(){
                 done()
             }, 1500)
             session.on('error', eventSpy)
-            session.spawn('bash')
+            session.spawn('ls')
         })
 
         it('should spawn with a command string', function(done){
@@ -37,6 +37,19 @@ describe('spectcl', function(){
             session.spawn('echo', ['hello'])
         })
 
+        it('should spawn without pty when `noPty` set to true', function(done){
+            var session = new spectcl()
+            session.on('error', function(err){
+                assert.fail('unexpected error: '+err)
+            })
+            session.on('exit', function(code){
+                assert.equal(0, code, 'child exited with non-0 return code')
+                done()
+            })
+            session.spawn('echo', ['hello'], {}, {noPty: true})
+            assert.equal(session.child.ttyname, undefined, 'child was spawned with a pty session')
+        })
+
         it('should emit `error` event when command cannot be spawned', function(done){
             var session = new spectcl()
             session.on('error', function(err){
@@ -46,9 +59,18 @@ describe('spectcl', function(){
             session.spawn('defnotacommand')
         })
 
-        it('should emit `close` event when child closes', function(done){
+        it('should emit `error` event when command cannot be spawned with `noPty`', function(done){
             var session = new spectcl()
-            session.on('close', function(){
+            session.on('error', function(err){
+                assert.notEqual(null, err, 'recieved null error object')
+                done()
+            })
+            session.spawn('defnotacommand', [], {}, {noPty:true})
+        })
+
+        it('should emit `exit` event when child exits', function(done){
+            var session = new spectcl()
+            session.on('exit', function(){
                 done()
             })
             session.spawn('echo hello')
@@ -57,7 +79,7 @@ describe('spectcl', function(){
         it('should emit `data` event when child session sends data', function(done){
             var session = new spectcl()
             session.on('data', function(data){
-                assert.equal(data, 'hello\n')
+                assert.equal(data, 'hello\r\n')
                 done()
             })
             session.spawn('echo hello')
@@ -163,7 +185,7 @@ describe('spectcl', function(){
                     session.send('exit\n')
                     session.expect([
                         'exiting...', function(){
-                            assert.equal(session.expect_out.buffer, ' output\nexiting...')
+                            assert.equal(session.expect_out.buffer, ' exit\r\noutput\r\nexiting...')
                             done()
                         }
                     ])
@@ -181,12 +203,28 @@ describe('spectcl', function(){
     })
 
     describe('sendEof', function(){
-        it('should kill the child process, emitting a close event', function(done){
+        it('should kill the child process, emitting an exit event', function(done){
             var session = new spectcl()
-            session.on('close', function(code, signal){
+            session.on('exit', function(code, signal){
                 done()
             })
             session.spawn('node --interactive')
+            session.expect([
+                '>', function(){
+                    session.sendEof()
+                }
+            ])
+        })
+
+        it('should kill the child process, emitting an exit event, when `noPty` enabled', function(done){
+            var session = new spectcl()
+            session.on('exit', function(code, signal){
+                done()
+            })
+            session.on('error', function(err){
+                assert.fail('unexpected error: '+err)
+            })
+            session.spawn('node', ['--interactive'], {}, {noPty:true})
             session.expect([
                 '>', function(){
                     session.sendEof()

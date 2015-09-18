@@ -1,3 +1,7 @@
+v0.2.0 - September 18 2015
+
+* Add support for pty sessions.
+
 v0.1.0 - September 14 2015
 
 * Rework of API to support more Expect-like syntax.
