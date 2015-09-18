@@ -79,7 +79,7 @@ describe('spectcl', function(){
         it('should emit `data` event when child session sends data', function(done){
             var session = new spectcl()
             session.on('data', function(data){
-                assert.equal(data, 'hello\r\n')
+                assert.equal(/hello/.test(data), true, 'unexpected output: '+data)
                 done()
             })
             session.spawn('echo hello')
