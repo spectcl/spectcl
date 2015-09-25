@@ -1,14 +1,22 @@
+v0.3.0 - September 24 2015
+
+* Add `expect_out.match` property. (Ryan Milbourne)
+* Docs: Add `ViaSat, Inc.` to License 2015 Copyright. (Ryan Milbourne)
+* Build: Fix `eslint` errors. (Ryan Milbourne)
+
+
 v0.2.0 - September 18 2015
 
-* Add support for pty sessions.
+* Add support for pty sessions. (Ryan Milbourne)
+
 
 v0.1.0 - September 14 2015
 
-* Rework of API to support more Expect-like syntax.
-* Build: Modify tests to use mocha. 
-* Build: Add `.istanbul.yml` with coverage thresholds.
-* Build: Write new tests that use the new control flow.
-* Docs: Update README.md.
+* Rework of API to support more Expect-like syntax. (Ryan Milbourne)
+* Build: Modify tests to use mocha. (Ryan Milbourne)
+* Build: Add `.istanbul.yml` with coverage thresholds. (Ryan Milbourne)
+* Build: Write new tests that use the new control flow. (Ryan Milbourne
+* Docs: Update README.md. (Ryan Milbourne)
 
 
 v0.0.7 - June 6, 2015
