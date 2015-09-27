@@ -1,3 +1,8 @@
+v0.3.1 - September 26 2015
+
+* Docs: Update examples, add reference in README
+
+
 v0.3.0 - September 24 2015
 
 * Add `expect_out.match` property. (Ryan Milbourne)
