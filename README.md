@@ -66,6 +66,10 @@ expect ">" {
 }
 ```
 
+## Examples
+
+The [examples](examples) directory contains spectcl code examples, as well as their TCL Expect equivalents.
+
 ## API Reference
 
 Watch this space. (See #2)

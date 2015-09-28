@@ -1,23 +1,29 @@
 #!/usr/bin/env node
 /*
- * node.js: Simple example for using the `node` interactive terminal with spectcl.
+ * node.js: Simple example for using spectcl to interact with a session
  *
+ * (C) 2015, Greg Cochard, Ryan Milbourne, ViaSat Inc.
  * (C) 2011, Elijah Insua, Marak Squires, Charlie Robbins.
  *
  */
 
-var spectcl = require('../lib/spectcl');
+var Spectcl = require('../lib/spectcl')
 
-spectcl.spawn("node --interactive")
-       .expect(">")
-       .sendline("console.log('testing')")
-       .expect("testing")
-       .sendline("process.exit()")
-       .run(function (err) {
-         if (!err) {
-           console.log("node process started, console logged, process exited");
-         }
-         else {
-           console.log(err);
-         }
-       });
+var session = new Spectcl()
+
+session.on('exit', function(){
+    process.exit()
+})
+
+session.spawn('node --interactive')
+session.expect([
+    />/, function(){
+        session.send('console.log(\'testing\')\r')
+        session.expect([
+            '>', function(){
+                session.send('process.exit()\r')
+                console.log('output was:\n%s',session.expect_out.buffer)
+            }
+        ])
+    }
+])
