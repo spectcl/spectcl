@@ -14,7 +14,10 @@ var session = new Spectcl()
 
 session.spawn('echo', ['hElLo'])
 session.expect([
-    /hello/i, function(){
+    /hello/i, function(match, cb){
         console.log('hello was echoed')
+        cb()
     }
-]);
+], function(){
+    console.log('all done')
+})

@@ -1,7 +1,7 @@
 {
   "name": "spectcl",
   "description": "Spawns and interacts with child processes using spawn / expect commands",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "author": "Greg Cochard <greg@gregcochard.com>",
   "maintainers": [
     "Greg Cochard <greg@gregcochard.com>",
@@ -57,6 +57,7 @@
   "dependencies": {
     "child_pty": "^2.0.1",
     "debug": "^2.2.0",
-    "extend": "^3.0.0"
+    "extend": "^3.0.0",
+    "through": "^2.3.8"
   }
 }

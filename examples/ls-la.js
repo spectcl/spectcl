@@ -13,7 +13,12 @@ var session = new Spectcl()
 
 session.spawn('ls -la /tmp/undefined', { stream: 'stderr' })
 session.expect([
-    'No such file or directory', function(){
-        console.log('That file/dir doesn\'t exist!')
+    'No such file or directory', function(match, cb){
+        cb(new Error('That file/dir doesn\'t exist!'))
     }
-])
+], function(err){
+    if(err){
+        console.log(err)
+    }
+    console.log('all done')
+})

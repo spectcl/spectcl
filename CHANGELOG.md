@@ -1,3 +1,8 @@
+v0.4.0
+
+* Add support for `eof` and `timeout`
+* Docs: Update README with `Getting Started`
+
 v0.3.1 - September 26 2015
 
 * Docs: Update examples, add reference in README
