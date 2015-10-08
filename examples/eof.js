@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /*
- * echo.js: Simple example for using the `echo` command with spectcl.
+ * eof.js: Simple example for expecting eof.
  *
  * (C) 2015, Greg Cochard, Ryan Milbourne, ViaSat Inc.
  * (C) 2011, Elijah Insua, Marak Squires, Charlie Robbins.
@@ -12,12 +12,15 @@ var Spectcl = require('../lib/spectcl')
 
 var session = new Spectcl({timeout: 5000})
 
-session.spawn('echo', ['hello'])
+session.spawn('echo hello', [], {}, {noPty:true})
 session.expect([
-    /hello/, function(match, cb){
-            console.log('hello was echoed')
-            cb()
+    /goodbye/, function(match, cb){
+        console.log('goodbye was echoed')
+        cb()
     },
+    session.EOF, function(match, cb){
+        cb('eof')
+    }
 ], function(err){
     if(err){
         console.log('exp error: %s',err)

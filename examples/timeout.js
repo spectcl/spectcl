@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
 /*
- * echo.js: Simple example for using the `echo` command with spectcl.
+ * timeout.js: Simple example for expecting a timeout.
  *
  * (C) 2015, Greg Cochard, Ryan Milbourne, ViaSat Inc.
- * (C) 2011, Elijah Insua, Marak Squires, Charlie Robbins.
  *
  */
 
@@ -12,12 +11,17 @@ var Spectcl = require('../lib/spectcl')
 
 var session = new Spectcl({timeout: 5000})
 
-session.spawn('echo', ['hello'])
+session.spawn('node --interactive')
 session.expect([
-    /hello/, function(match, cb){
-            console.log('hello was echoed')
+    /foo/, function(match, cb){
+            console.log('foo was echoed')
+            //we'll never get here!
             cb()
     },
+    session.TIMEOUT, function(match, cb){
+        session.send('exit\r')
+        cb('timeout')
+    }
 ], function(err){
     if(err){
         console.log('exp error: %s',err)

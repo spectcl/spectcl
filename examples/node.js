@@ -17,13 +17,18 @@ session.on('exit', function(){
 
 session.spawn('node --interactive')
 session.expect([
-    />/, function(){
+    />/, function(match, cb){
         session.send('console.log(\'testing\')\r')
-        session.expect([
-            '>', function(){
-                session.send('process.exit()\r')
-                console.log('output was:\n%s',session.expect_out.buffer)
-            }
-        ])
+        cb()
     }
-])
+], function(){
+    session.expect([
+        '>', function(match, cb){
+            session.send('process.exit()\r')
+            console.log('output was:\n%s',session.expect_out.buffer)
+            cb()
+        }
+    ], function(err){
+        console.log('all done')
+    })
+})

@@ -4,41 +4,41 @@
 
 var assert = require('assert')
   , path = require('path')
-  , sinon = require('sinon')
   , Spectcl = require('../lib/spectcl')
 
 describe('spectcl', function(){
     describe('spawn', function(){
         it('should spawn a known command without emitting an error', function(done){
             var session = new Spectcl()
-            var eventSpy = sinon.spy()
-            setTimeout(function(){
-                assert.equal(eventSpy.called, false, 'unexpected error event fired')
+            session.on('error', function(err){
+                assert.fail('unexpected error: %s',err)
+            })
+            session.on('exit', function(){
                 done()
-            }, 1500)
-            session.on('error', eventSpy)
+            })
             session.spawn('ls')
         })
 
         it('should spawn with a command string', function(done){
             var session = new Spectcl()
-            var eventSpy = sinon.spy()
-            setTimeout(function(){
-                assert.equal(eventSpy.called, false, 'unexpected error event fired')
+            session.on('error', function(err){
+                assert.fail('unexpected error: %s',err)
+            })
+            session.on('exit', function(){
                 done()
-            }, 1500)
-            session.on('error', eventSpy)
+            })
             session.spawn('echo hello')
         })
 
         it('should spawn with a command string and args array', function(done){
             var session = new Spectcl()
-            var eventSpy = sinon.spy()
-            setTimeout(function(){
-                assert.equal(eventSpy.called, false, 'unexpected error event fired')
+            session.on('error', function(err){
+                assert.fail('unexpected error: %s', err)
+            })
+            session.on('exit', function(code){
+                assert.equal(code, 0, 'non-0 return code')
                 done()
-            }, 1500)
-            session.on('error', eventSpy)
+            })
             session.spawn('echo', ['hello'])
         })
 
@@ -75,16 +75,8 @@ describe('spectcl', function(){
 
         it('should emit `exit` event when child exits', function(done){
             var session = new Spectcl()
-            session.on('exit', function(){
-                done()
-            })
-            session.spawn('echo hello')
-        })
-
-        it('should emit `data` event when child session sends data', function(done){
-            var session = new Spectcl()
-            session.on('data', function(data){
-                assert.equal(/hello/.test(data), true, 'unexpected output: '+data)
+            session.on('exit', function(code){
+                assert.equal(code, 0, 'non-0 return code')
                 done()
             })
             session.spawn('echo hello')
@@ -92,21 +84,59 @@ describe('spectcl', function(){
     })
 
     describe('expect', function(){
-        it('should expect a String', function(done){
+        it('should expect and match on a String', function(done){
             var session = new Spectcl()
             session.spawn('echo hello')
             session.expect([
-                'hello', function(){
-                    done()
+                'hello', function(match, cb){
+                    cb(null, 'hello')
                 }
-            ])
+            ], function(err, data){
+                assert.equal(err, null, 'unexpected err in final callback')
+                assert.equal(data, 'hello', 'final callback was called by function other than expecation handler')
+                done()
+            })
         })
 
-        it('should expect a RegExp', function(done){
+        it('should expect and match on a RegExp', function(done){
             var session = new Spectcl()
             session.spawn('echo hello')
             session.expect([
-                /hello/, function(){
+                /hello/, function(match, cb){
+                    cb(null, 'hello')
+                }
+            ], function(err, data){
+                assert.equal(err, null, 'unexpected err in final callback')
+                assert.equal(data, 'hello', 'final callback was called by function other than expecation handler')
+                done()
+            })
+        })
+
+        it('should match on content already in the session cache', function(done){
+            var session = new Spectcl()
+            session.spawn('echo hello')
+            // Wait so that `hello` is for sure in the cache, and not read in as data
+            setTimeout(function(){
+                session.expect([
+                    /hello/, function(match, cb){
+                        cb(null, 'hello')
+                    }
+                ], function(err, data){
+                    assert.ifError(err)
+                    assert.equal(data, 'hello')
+                    done()
+                })
+            }, 1000)
+        })
+
+        it('should populate expect_out object when match is found', function(done){
+            var session = new Spectcl()
+            session.spawn('node --interactive')
+            session.expect([
+                '>', function(){
+                    assert.notEqual(session.expect_out.match, null, 'null expect_out match')
+                    assert.notEqual(session.expect_out.buffer, '', 'empty expect_out buffer')
+                    session.send('process.exit()\r')
                     done()
                 }
             ])
@@ -121,6 +151,7 @@ describe('spectcl', function(){
             })
             session.expect([
                 1, function(){
+                    assert.fail('unexpected match')
                 }
             ])
         })
@@ -150,6 +181,16 @@ describe('spectcl', function(){
             ])
         })
 
+        it('should emit error when given empty expectations array', function(done){
+            var session = new Spectcl()
+            session.spawn('echo hello')
+            session.on('error', function(err){
+                assert.equal('cannot call expect with empty array', err.message, 'received unexpected error')
+                done()
+            })
+            session.expect([])
+        })
+
         it('should emit error when calling expect() when already expecting', function(done){
             var session = new Spectcl()
             session.spawn('echo hello')
@@ -169,31 +210,30 @@ describe('spectcl', function(){
             ])
         })
 
-        it('should match on content already in the session cache', function(done){
+        it('should call the final callback after match handler has been called', function(done){
             var session = new Spectcl()
+            session.on('error', function(err){
+                assert.fail('unexpected error '+err)
+            })
             session.spawn('echo hello')
-            // Wait so that `hello` is for sure in the cache, and not read in as data
-            setTimeout(function(){
-                session.expect([
-                    /hello/, function(){
-                        done()
-                    }
-                ])
-            }, 1000)
+            session.expect([
+                /hello/, function(match, cb){
+                    cb(null, 'hello')
+                }
+            ], function(err, data){
+                assert.ifError(err)
+                assert.equal(data, 'hello')
+                done()
+            })
         })
 
         it('should implement EXP_CONTINUE', function(done){
             var session = new Spectcl()
             session.spawn('bash '+path.join(__dirname,'fixtures/test_exp_continue.sh'))
             session.expect([
-                /\$/, function(){
+                /\$/, function(match, cb){
                     session.send('exit\n')
-                    session.expect([
-                        'exiting...', function(){
-                            assert.equal(session.expect_out.buffer, ' exit\r\noutput\r\nexiting...')
-                            done()
-                        }
-                    ])
+                    cb(null, 'done')
                 },
                 /assword/, function(){
                     session.send('bar\n')
@@ -203,21 +243,108 @@ describe('spectcl', function(){
                     session.send('foo\n')
                     return session.EXP_CONTINUE
                 }
-            ])
+            ], function(err, data){
+                assert.equal(err, null, 'unexpected error in final callback')
+                assert.equal(data, 'done')
+                done()
+            })
         })
 
-        it('should set expect_out.match object when match is found', function(done){
-            var session = new Spectcl()
-            session.on('exit', function(){
-                done()
+        it('should expect and match on TIMEOUT', function(done){
+            var session = new Spectcl({timeout: 2000})
+            session.on('error', function(err){
+                assert.fail('unexpected error '+err)
             })
             session.spawn('node --interactive')
             session.expect([
-                '>', function(){
-                    assert.notEqual(session.expect_out.match, null, 'null expect_out match')
-                    session.sendEof()
+                'foo', function(){
+                    session.send('process.exit()\r')
+                    assert.fail('unexpected match')
+                },
+                session.TIMEOUT, function(match, cb){
+                    cb(new Error('timeout'))
                 }
-            ])
+            ], function(err){
+                assert.equal(err.message, 'timeout', 'received non-timeout error')
+                session.send('process.exit()\r')
+                done()
+            })
+        })
+
+        it('should call the final callback on TIMEOUT when no TIMEOUT expectation is specified', function(done){
+            var session = new Spectcl({timeout: 2000})
+            session.on('error', function(err){
+                assert.fail('unexpected error '+err)
+            })
+            session.spawn('node --interactive')
+            session.expect([
+                'foo', function(){
+                    session.send('process.exit()\r')
+                    assert.fail('unexpected match')
+                }
+            ], function(err){
+                assert.ifError(err)
+                session.send('process.exit()\r')
+                done()
+            })
+        })
+
+        it('should expect and match on FULL_BUFFER', function(done){
+            var session = new Spectcl({matchMax: 5})
+            session.spawn('echo thequickbrownfoxjumpsoverthelazydog')
+            session.expect([
+                session.FULL_BUFFER, function(match, cb){
+                    cb(new Error('full buffer'))
+                }
+            ], function(err){
+                assert.equal(err.message, 'full buffer', 'unexpected error: '+err)
+                done()
+            })
+        })
+
+        it('should expect and match on EOF', function(done){
+            var session = new Spectcl()
+            session.on('error', function(err){
+                assert.fail('unexpected error '+err)
+            })
+            session.spawn('echo hello')
+            session.expect([
+                session.EOF, function(match, cb){
+                    cb(new Error('eof'))
+                }
+            ], function(err){
+                assert.equal(err.message, 'eof', 'received non-eof error in final callback')
+                done()
+            })
+        })
+
+        it('should expect and match on EOF when `noPty` enabled', function(done){
+            var session = new Spectcl()
+            session.on('error', function(err){
+                assert.fail('unexpected error '+err)
+            })
+            session.spawn('echo', ['hello'], {}, {noPty: true})
+            session.expect([
+                session.EOF, function(match, cb){
+                    cb(new Error('eof'))
+                }
+            ], function(err){
+                assert.equal(err.message, 'eof', 'received non-eof error in final callback')
+                done()
+            })
+        })
+
+        it('should call the final callback on EOF when no EOF expectation is specified', function(done){
+            var session = new Spectcl()
+            session.spawn('echo hello')
+            session.expect([
+                /goodbye/, function(){
+                    assert.fail('unexpected match')
+                }
+            ], function(err){
+                assert.ifError(err)
+                done()
+            })
         })
     })
 
