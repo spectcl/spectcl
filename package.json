@@ -24,7 +24,7 @@
     "dateformat": "^1.0.11",
     "eslint": "^1.0.0",
     "gh-got": "^2.0.1",
-    "istanbul": "^0.3.14",
+    "istanbul": "^0.4.0",
     "markdownlint": "0.0.8",
     "mocha": "^2.3.3",
     "npm-license": "^0.3.1",
