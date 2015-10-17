@@ -1,11 +1,20 @@
+v0.4.2 - October 17 2015
+
+* Build: Add `debug` output to `test` script (Ryan Milbourne)
+* Build: Update dependencies (greenkeeper)
+* Build: Fix npm install on node v4 (Greg Cochard)
+
+
 v0.4.1 - October 9 2015
 
 * Fix #30 (Ryan Milbourne)
+
 
 v0.4.0 - October 7 2015
 
 * Add support for `eof` and `timeout` (Ryan Milbourne)
 * Docs: Update README with `Getting Started` (Ryan Milbourne)
+
 
 v0.3.1 - September 26 2015
 

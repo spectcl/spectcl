@@ -1,7 +1,7 @@
 {
   "name": "spectcl",
   "description": "Spawns and interacts with child processes using spawn / expect commands",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Greg Cochard <greg@gregcochard.com>",
   "maintainers": [
     "Greg Cochard <greg@gregcochard.com>",
@@ -37,7 +37,7 @@
   },
   "main": "./lib/spectcl",
   "scripts": {
-    "test": "istanbul cover node_modules/mocha/bin/_mocha",
+    "test": "DEBUG=spectcl istanbul cover node_modules/mocha/bin/_mocha",
     "lint": "eslint lib/*.js test/*.js"
   },
   "pre-commit": [
