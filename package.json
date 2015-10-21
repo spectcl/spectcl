@@ -39,7 +39,8 @@
   "main": "./lib/spectcl",
   "scripts": {
     "test": "DEBUG=spectcl istanbul cover node_modules/mocha/bin/_mocha",
-    "lint": "eslint lib/*.js test/*.js"
+    "lint": "eslint lib/*.js test/*.js",
+    "docugen": "./docugen.sh"
   },
   "pre-commit": [
     "npm run lint"
