@@ -28,7 +28,7 @@
     "markdownlint": "0.0.8",
     "mocha": "^2.3.3",
     "npm-license": "^0.3.1",
-    "pre-git": "^0.6.2",
+    "pre-git": "^1.2.0",
     "prompt": "~0.2.11",
     "semver": "^5.0.3",
     "shelljs": "^0.5.3",
