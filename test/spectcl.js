@@ -348,16 +348,35 @@ describe('spectcl', function(){
         })
     })
 
-    describe('sendEof', function(){
-        it('should kill the child process, emitting an exit event', function(done){
+    describe('send', function(){
+        it('should call the cb once data has been written to child', function(done){
             var session = new Spectcl()
-            session.on('exit', function(){
-                done()
-            })
             session.spawn('node --interactive')
             session.expect([
                 '>', function(){
-                    session.sendEof()
+                    assert.notEqual(session.expect_out.match, null, 'null expect_out match')
+                    assert.notEqual(session.expect_out.buffer, '', 'empty expect_out buffer')
+                    session.send('process.exit()\r', function(){
+                        session.child.on('exit', function(){
+                            done()
+                        })
+                    })
+                }
+            ])
+        })
+    })
+
+    describe('sendEof', function(){
+        it('should kill the child process, emitting an exit event', function(done){
+            var session = new Spectcl()
+            session.spawn('node --interactive')
+            session.expect([
+                '>', function(){
+                    session.sendEof(function(){
+                        session.on('exit', function(){
+                            done()
+                        })
+                    })
                 }
             ])
         })

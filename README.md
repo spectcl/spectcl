@@ -173,7 +173,7 @@ The [examples](examples) directory contains spectcl code examples, as well as th
 
 ## API Reference
 
-Watch this space. (See #2)
+The Spectcl API is documented on [spectcl.github.io](https://github.com/spectcl/spectcl.github.io/blob/master/api.html).
 
 ## Tests
 
