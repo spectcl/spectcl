@@ -1,3 +1,11 @@
+v0.4.3 - November 24 2015
+
+* Add callbacks to `send` and `sendEof` to support "fire and forget" use (Ryan Milbourne)
+* Build: Update dependencies (greenkeeper)
+* Docs: Update spectcl.github.io via `docugen` (Ryan Milbourne)
+* Docs: Add link to github.io API docs in README.md (Ryan Milbourne)
+
+
 v0.4.2 - October 17 2015
 
 * Build: Add `debug` output to `test` script (Ryan Milbourne)
