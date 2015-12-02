@@ -372,10 +372,21 @@ describe('spectcl', function(){
             session.spawn('node --interactive')
             session.expect([
                 '>', function(){
+                    session.on('exit', function(){
+                        done()
+                    })
+                    session.sendEof()
+                }
+            ])
+        })
+
+        it('should call the callback when given one', function(done){
+            var session = new Spectcl()
+            session.spawn('node --interactive')
+            session.expect([
+                '>', function(){
                     session.sendEof(function(){
-                        session.on('exit', function(){
-                            done()
-                        })
+                        done()
                     })
                 }
             ])
