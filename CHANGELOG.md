@@ -1,3 +1,10 @@
+v0.4.4 - December 9 2015
+
+* Fix clearing of expTimeout on EOF detection (Ryan Milbourne)
+* Build: Update dependencies (greenkeeper)
+* Docs: Add twitter badge to README (Greg Cochard)
+
+
 v0.4.3 - November 24 2015
 
 * Add callbacks to `send` and `sendEof` to support "fire and forget" use (Ryan Milbourne)
