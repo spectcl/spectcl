@@ -1,3 +1,7 @@
+v0.5.1 - January 28 2016
+
+* Replace variable "expectation" with "exp" in lines 290 and 300-302
+
 v0.4.4 - December 9 2015
 
 * Fix clearing of expTimeout on EOF detection (Ryan Milbourne)
