@@ -1,4 +1,15 @@
-# spectcl [![Build Status](https://travis-ci.org/spectcl/spectcl.svg)](https://travis-ci.org/spectcl/spectcl) [![Coverage Status](https://coveralls.io/repos/spectcl/spectcl/badge.svg)](https://coveralls.io/r/spectcl/spectcl) [![NPM](https://nodei.co/npm/spectcl.png?mini=true)](https://nodei.co/npm/spectcl/) [![Follow Spectcl](https://img.shields.io/twitter/follow/spectcl.svg?style=social)](https://twitter.com/intent/follow?screen_name=spectcl)
+# spectcl [![Build Status][buildstatus]][buildloc] [![Coverage Status][covstatus]][covloc] [![Dependencies][depstatus]][deploc] [![NPM][npmbadge]][npmloc] [![Follow Spectcl][twitbadge]][twitloc]
+
+[buildstatus]: https://travis-ci.org/spectcl/spectcl.svg
+[buildloc]: https://travis-ci.org/spectcl/spectcl
+[covstatus]: https://coveralls.io/repos/spectcl/spectcl/badge.svg
+[covloc]: https://coveralls.io/r/spectcl/spectcl
+[depstatus]: https://david-dm.org/spectcl/spectcl.svg
+[deploc]: https://david-dm.org/spectcl/spectcl
+[npmbadge]: https://nodei.co/npm/spectcl.png?mini=true
+[npmloc]: https://nodei.co/npm/spectcl/
+[twitbadge]: https://img.shields.io/twitter/follow/spectcl.svg?style=social
+[twitloc]: https://twitter.com/intent/follow?screen_name=spectcl
 
 `spectcl` (pronounced spectacle) is a node.js module for spawning child applications
 (such as ssh) and seamlessly controlling them using javascript callbacks. `spectcl`
