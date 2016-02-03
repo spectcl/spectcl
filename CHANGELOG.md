@@ -1,3 +1,7 @@
+v0.6.0 - February 2 2016
+
+* "expect" function adds third parameter to callback, the input string which resulted in the match
+
 v0.5.1 - January 28 2016
 
 * Replace variable "expectation" with "exp" in lines 290 and 300-302
