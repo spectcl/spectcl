@@ -10,8 +10,11 @@ var assert = require('assert')
 
 // set up the mock spawn object
 var mySpawn = mockSpawn()
+  , myPtySpawn = mockSpawn()
+  , ttycount = 0
+
 require('child_process').spawn = mySpawn
-require('child_pty').spawn = mySpawn
+require('child_pty').spawn = myPtySpawn
 
 function nodeRepl(command){
     return vm.runInNewContext(command) + '\n'
@@ -49,6 +52,80 @@ mySpawn.setStrategy(function (command, args) {
                 self.stdout.write('>')
             })
         }
+    case 'ls':
+        if(args[0] === '-G'){
+            return mySpawn.simple(0, '\u001b[33mHello\nWorld\u001b[0m')
+        }
+        break
+    case 'bash':
+        switch(args){
+        case 'fixtures/test_exp_continue.sh':
+        default:
+            return function(cb){
+                var self = this
+                self.stdout.write('"Connecting" to a server:\n')
+                self.stdout.write('user:')
+                self.stdin.on('data', function(d){
+                    d = (d.toString('utf8') || d).trim()
+                    switch(d){
+                    case 'foo':
+                        return self.stdout.write('password:')
+                    case 'bar':
+                        return self.stdout.write('\n[foo@test-server]$ ')
+                    case 'exit':
+                        self.stdout.write('output\n')
+                        self.stdout.write('exiting...')
+                        return cb(0)
+                    default:
+                        return cb(1)
+                    }
+                })
+            }
+        }
+        break
+    default:
+        return mySpawn.simple(0,'hello world')
+    }
+})
+
+myPtySpawn.setSignals({SIGTERM:true})
+myPtySpawn.setStrategy(function (command, args) {
+    switch(command){
+    case 'defnotacommand':
+        return function(cb){
+            this.emit('error', 'error')
+            return cb(8)
+        }
+    case 'echo':
+        if(args instanceof Array){
+            args = args.join(' ')
+        }
+        return mySpawn.simple(0,args)
+    case 'node':
+        return function(cb){
+            var self = this
+            this.stdout.ttyname = 'tty'+ttycount++
+            this.stdin.destroy = function(){
+                return cb(0)
+            }
+            this.stdout.write('>')
+            this.stdin.on('data',function(s){
+                if(s instanceof Buffer){
+                    s = s.toString('utf8')
+                }
+                if(/^process.exit\(\)/.test(s)){
+                    return cb(0)
+                }
+                var out = nodeRepl(s)
+                self.stdout.write(out)
+                self.stdout.write('>')
+            })
+        }
+    case 'ls':
+        if(args[0] === '-G'){
+            return mySpawn.simple(0, '\u001b[33mHello\nWorld\u001b[0m')
+        }
+        break
     case 'bash':
         switch(args){
         case 'fixtures/test_exp_continue.sh':
@@ -143,8 +220,42 @@ describe('spectcl', function(){
                 assert.equal(0, code, 'child exited with non-0 return code')
                 done()
             })
-            session.spawn('echo', ['hello'], {}, {noPty: true})
+            session.spawn(['echo', 'hello'], {}, {noPty: true})
             assert.equal(session.child.ttyname, undefined, 'child was spawned with a pty session')
+        })
+
+        it('should spawn without cmdParams but with cmdOptions', function(done){
+            var session = new Spectcl()
+            session.on('error', function(err){
+                assert.fail('unexpected error: '+err)
+            })
+            session.on('exit', function(code){
+                assert.equal(0, code, 'child exited with non-0 return code')
+                done()
+            })
+            session.spawn(['echo', 'hello'], {})
+            assert.equal(session.child.ttyname, undefined, 'child was spawned with a pty session')
+        })
+
+        it('should throw an error if command is not string or array', function(done){
+            var session = new Spectcl()
+            try{
+                session.spawn({'echo': 'hello'}, {})
+            } catch(e){
+                assert(e)
+                done()
+            }
+        })
+
+        it('should spawn with ignoreCase and stripColors options', function(done){
+            var session = new Spectcl({stripColors:true,ignoreCase:true})
+            session.on('error', function(err){
+                assert.fail('unexpected error: %s',err)
+            })
+            session.on('exit', function(){
+                done()
+            })
+            session.spawn(['ls', '-G'])
         })
 
         it('should emit `error` event when command cannot be spawned', function(done){
@@ -182,6 +293,28 @@ describe('spectcl', function(){
             session.spawn('echo hello')
             session.expect([
                 'hello', function(match, cb){
+                    cb(null, 'hello')
+                }
+            ], function(err, data){
+                assert.equal(err, null, 'unexpected err in final callback')
+                assert.equal(data, 'hello', 'final callback was called by function other than expecation handler, data: "'+data+'"')
+                finished()
+            })
+            session.on('exit', function(){
+                finished()
+            })
+        })
+
+        it('should ignore multiple callbacks for the same string', function(done){
+            var session = new Spectcl()
+              , finished = _.after(2,done)
+            session.spawn('echo hello')
+            session.expect([
+                'hello', function(match, cb){
+                    cb(null, 'hello')
+                },
+                'hello', function(match, cb){
+                    assert(false)
                     cb(null, 'hello')
                 }
             ], function(err, data){
