@@ -292,12 +292,13 @@ describe('spectcl', function(){
               , finished = _.after(2,done)
             session.spawn('echo hello')
             session.expect([
-                'hello', function(match, cb){
-                    cb(null, 'hello')
+                'hello', function(match, cb, matched){
+                    cb(null, 'hello', match, matched)
                 }
-            ], function(err, data){
+            ], function(err, data, match, matched){
                 assert.equal(err, null, 'unexpected err in final callback')
                 assert.equal(data, 'hello', 'final callback was called by function other than expecation handler, data: "'+data+'"')
+                assert.equal(match, matched, 'expected string equals matched string')
                 finished()
             })
             session.on('exit', function(){
@@ -332,12 +333,14 @@ describe('spectcl', function(){
               , finished = _.after(2,done)
             session.spawn('echo hello')
             session.expect([
-                /hello/, function(match, cb){
-                    cb(null, 'hello')
+                /hello/, function(match, cb, matched){
+                    
+                    cb(null, 'hello', match, matched)
                 }
-            ], function(err, data){
+            ], function(err, data, match, matched){
                 assert.equal(err, null, 'unexpected err in final callback')
                 assert.equal(data, 'hello', 'final callback was called by function other than expecation handler, data: "'+data+'"')
+                assert.equal(match.toString().replace(/\//g,''), matched[0], 'expected regex equals matched string')
                 finished()
             })
             session.on('exit', function(){
