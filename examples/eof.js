@@ -14,11 +14,11 @@ var session = new Spectcl({timeout: 5000})
 
 session.spawn('echo hello', [], {}, {noPty:true})
 session.expect([
-    /goodbye/, function(match, cb){
+    /goodbye/, function(match, matched, cb){
         console.log('goodbye was echoed')
         cb()
     },
-    session.EOF, function(match, cb){
+    session.EOF, function(match, matched, cb){
         cb('eof')
     }
 ], function(err){
