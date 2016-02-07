@@ -32,7 +32,7 @@
     "mock-spawn": "^0.2.6",
     "npm-license": "^0.3.1",
     "pre-git": "^3.2.0",
-    "prompt": "~0.2.11",
+    "prompt": "~0.3.0",
     "semver": "^5.0.3",
     "shelljs": "^0.5.3",
     "shelljs-nodecli": "^0.1.1",
