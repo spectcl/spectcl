@@ -14,10 +14,10 @@ var session = new Spectcl()
 
 session.spawn('node --interactive')
 session.expect([
-    />/, function(match, outer_cb){
+    />/, function(match, matched, outer_cb){
         session.send('console.log(\'testing\')\r')
         session.expect([
-            '>', function(match, inner_cb){
+            '>', function(match, matched, inner_cb){
                 session.send('process.exit()\r')
                 inner_cb()
             }

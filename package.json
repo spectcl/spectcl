@@ -1,7 +1,7 @@
 {
   "name": "spectcl",
   "description": "Spawns and interacts with child processes using spawn / expect commands",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "Ryan Milbourne <ryan.milbourne@viasat.com>",
   "maintainers": [
     "Greg Cochard <greg@gregcochard.com>",
@@ -34,7 +34,7 @@
     "pre-git": "^3.2.0",
     "prompt": "~1.0.0",
     "semver": "^5.0.3",
-    "shelljs": "^0.5.3",
+    "shelljs": "^0.6.0",
     "shelljs-nodecli": "^0.1.1",
     "sinon": "^1.16.1"
   },
