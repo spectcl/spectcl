@@ -292,12 +292,13 @@ describe('spectcl', function(){
               , finished = _.after(2,done)
             session.spawn('echo hello')
             session.expect([
-                'hello', function(match, cb){
-                    cb(null, 'hello')
+                'hello', function(match, matched, cb){
+                    cb(null, 'hello', match, matched)
                 }
-            ], function(err, data){
+            ], function(err, data, match, matched){
                 assert.equal(err, null, 'unexpected err in final callback')
                 assert.equal(data, 'hello', 'final callback was called by function other than expecation handler, data: "'+data+'"')
+                assert.equal(match, matched, 'expected string equals matched string')
                 finished()
             })
             session.on('exit', function(){
@@ -310,16 +311,17 @@ describe('spectcl', function(){
               , finished = _.after(2,done)
             session.spawn('echo hello')
             session.expect([
-                'hello', function(match, cb){
+                'hello', function(match, matched, cb){
                     cb(null, 'hello')
                 },
-                'hello', function(match, cb){
+                'hello', function(match, matched, cb){
                     assert(false)
                     cb(null, 'hello')
                 }
-            ], function(err, data){
+            ], function(err, data, match, matched){
                 assert.equal(err, null, 'unexpected err in final callback')
                 assert.equal(data, 'hello', 'final callback was called by function other than expecation handler, data: "'+data+'"')
+                assert.equal(match, matched, 'expected string equals matched string')
                 finished()
             })
             session.on('exit', function(){
@@ -332,12 +334,13 @@ describe('spectcl', function(){
               , finished = _.after(2,done)
             session.spawn('echo hello')
             session.expect([
-                /hello/, function(match, cb){
-                    cb(null, 'hello')
+                /hello/, function(match, matched, cb){
+                    cb(null, 'hello', match, matched)
                 }
-            ], function(err, data){
+            ], function(err, data, match, matched){
                 assert.equal(err, null, 'unexpected err in final callback')
                 assert.equal(data, 'hello', 'final callback was called by function other than expecation handler, data: "'+data+'"')
+                assert.equal(match.toString().replace(/\//g,''), matched[0], 'expected regex equals matched string')
                 finished()
             })
             session.on('exit', function(){
@@ -351,7 +354,7 @@ describe('spectcl', function(){
             // Wait until exit so that `hello` is for sure in the cache, and not read in as data
             session.child.on('exit',function(){
                 session.expect([
-                    'hello', function(match, cb){
+                    'hello', function(match, matched, cb){
                         cb(null, 'hello')
                     }
                 ], function(err, data){
@@ -455,7 +458,7 @@ describe('spectcl', function(){
             })
             session.spawn('echo hello')
             session.expect([
-                /hello/, function(match, cb){
+                /hello/, function(match, matched, cb){
                     cb(null, 'hello')
                 }
             ], function(err, data){
@@ -473,7 +476,7 @@ describe('spectcl', function(){
               , finished = _.after(2,done)
             session.spawn('bash',['fixtures/test_exp_continue.sh'],{cwd:__dirname})
             session.expect([
-                /\$/, function(match, cb){
+                /\$/, function(match, matched, cb){
                     session.send('exit\n')
                     cb(null, 'done')
                 },
@@ -507,7 +510,7 @@ describe('spectcl', function(){
                     session.send('process.exit()\r')
                     assert.fail('unexpected match')
                 },
-                session.TIMEOUT, function(match, cb){
+                session.TIMEOUT, function(match, matched, cb){
                     cb(new Error('timeout'))
                 }
             ], function(err){
@@ -547,7 +550,7 @@ describe('spectcl', function(){
               , finished = _.after(2,done)
             session.spawn('echo thequickbrownfoxjumpsoverthelazydog')
             session.expect([
-                session.FULL_BUFFER, function(match, cb){
+                session.FULL_BUFFER, function(match, matched, cb){
                     cb(new Error('full buffer'))
                 }
             ], function(err){
@@ -567,7 +570,7 @@ describe('spectcl', function(){
             })
             session.spawn('echo hello')
             session.expect([
-                session.EOF, function(match, cb){
+                session.EOF, function(match, matched, cb){
                     cb(new Error('eof'))
                 }
             ], function(err){
@@ -583,7 +586,7 @@ describe('spectcl', function(){
             })
             session.spawn('echo', ['hello'], {}, {noPty: true})
             session.expect([
-                session.EOF, function(match, cb){
+                session.EOF, function(match, matched, cb){
                     cb(new Error('eof'))
                 }
             ], function(err){

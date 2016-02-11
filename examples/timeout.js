@@ -13,12 +13,12 @@ var session = new Spectcl({timeout: 5000})
 
 session.spawn('node --interactive')
 session.expect([
-    /foo/, function(match, cb){
+    /foo/, function(match, matched, cb){
             console.log('foo was echoed')
             //we'll never get here!
             cb()
     },
-    session.TIMEOUT, function(match, cb){
+    session.TIMEOUT, function(match, matched, cb){
         session.send('exit\r')
         cb('timeout')
     }

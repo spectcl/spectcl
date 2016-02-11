@@ -45,13 +45,13 @@ var Spectcl = require('spectcl')
 
 session.spawn('node --interactive')
 session.expect([
-    '>', function(match, cb){
+    '>', function(match, matched, cb){
         session.send('process.version\n')
         cb()
     }
 ], function(err){
     session.expect([
-        '>', function(match, cb){
+        '>', function(match, matched, cb){
             session.send('process.exit()\n')
             cb()
         }
@@ -64,8 +64,8 @@ session.expect([
 
 In the example above, we spawn a `node` interactive interpreter, have it output the
 value of `process.version`, and send `process.exit()`.  We capture the results from
-the expect_out buffer, and close the session, printing the version in the final
-callback.
+the expect_out buffer, as well as the input string that was matched, and close the session,
+printing the version in the final callback.
 
 Compare to this Tcl Expect block:
 
@@ -130,7 +130,9 @@ for the expectation that precedes it.  In the example above, we are going to mat
 do, the handler function is called.  
 
 The handler functions will be called with the match object (Either a String or the Match object from the
-RegExp test), and the final callback.
+RegExp test), the String or object that is a result of the successful match ("Matched"), and the final callback.
+For example, if the Match object is /he([a-z])lo/ and the input is "hello," the Matched object will be
+["hello","l"]. If the Match object is a String, the Matched parameter is the same as the Match: e.g. 'hello', 'hello'.
 
 Like Tcl Expect, `expect()` will wait until a match occurs, a specified period of time has elapsed,
 or EOF is seen.  The timeout period can be specified when creating the Spectcl object by specifying a
@@ -162,7 +164,7 @@ be called, with no Error:
 
 ```js
 session.expect([
-    /foo/, function(match, cb){
+    /foo/, function(match, matched, cb){
         // do things
         cb()
     }
