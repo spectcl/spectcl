@@ -82,7 +82,6 @@ mySpawn.setStrategy(function (command, args) {
                 })
             }
         }
-        break
     default:
         return mySpawn.simple(0,'hello world')
     }
@@ -151,7 +150,6 @@ myPtySpawn.setStrategy(function (command, args) {
                 })
             }
         }
-        break
     default:
         return mySpawn.simple(0,'hello world')
     }
@@ -239,7 +237,7 @@ describe('spectcl', function(){
 
         it('should throw an error if command is not string or array', function(done){
             var session = new Spectcl()
-            try{
+            try {
                 session.spawn({'echo': 'hello'}, {})
             } catch(e){
                 assert(e)
