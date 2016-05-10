@@ -1,3 +1,12 @@
+v0.6.2 - May 10 2016
+
+* modify "sendEof" to invoke callback w/o waiting for child stream closure (Ryan Milbourne)
+* Build: Update dependencies (greenkeeper)
+
+v0.6.1 - April 8 2016
+
+* Build: Remove unused dependencies, makefile (Greg Cochard)
+
 v0.6.0 - February 2 2016
 
 * "expect" function inserts third parameter to callback, the match result
