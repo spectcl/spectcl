@@ -4,6 +4,7 @@ node_js:
   - "0.12"
   - 4
   - 5
+  - 6
 
 # to use native modules in node 4+, need to add clang or use trusty: https://docs.travis-ci.com/user/languages/javascript-with-nodejs#Node.js-v4-(or-io.js-v3)-compiler-requirements
 #sudo: false
