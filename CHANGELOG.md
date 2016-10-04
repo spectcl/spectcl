@@ -1,3 +1,9 @@
+v0.6.3 - Oct 4 2016
+
+* Fix issue with exceptions being thrown by `session.send` (Ryan Milbourne)
+* Fix issue with events being emitted before listener callbacks are registered (Ryan Milbourne)
+* Build: Update dependencies (greenkeeper)
+
 v0.6.2 - May 10 2016
 
 * modify "sendEof" to invoke callback w/o waiting for child stream closure (Ryan Milbourne)
