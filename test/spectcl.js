@@ -616,10 +616,10 @@ describe('spectcl', function(){
                 '>', function(){
                     assert.notEqual(session.expect_out.match, null, 'null expect_out match')
                     assert.notEqual(session.expect_out.buffer, '', 'empty expect_out buffer')
-                    session.send('process.exit()\r', function(){
+                    session.child.on('exit', function(){
                         finished()
                     })
-                    session.child.on('exit', function(){
+                    session.send('process.exit()\r', function(){
                         finished()
                     })
                 }
