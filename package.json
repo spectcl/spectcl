@@ -29,7 +29,7 @@
     "mock-spawn": "^0.2.6",
     "pre-git": "^3.2.0",
     "prompt": "^1.0.0",
-    "sinon": "^1.16.1"
+    "sinon": "^2.0.0"
   },
   "main": "./lib/spectcl",
   "scripts": {
