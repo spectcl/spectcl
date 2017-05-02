@@ -1,5 +1,7 @@
 # spectcl [![Build Status][buildstatus]][buildloc] [![Coverage Status][covstatus]][covloc] [![Dependencies][depstatus]][deploc] [![NPM][npmbadge]][npmloc] [![Follow Spectcl][twitbadge]][twitloc]
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/spectcl/spectcl.svg)](https://greenkeeper.io/)
+
 [buildstatus]: https://travis-ci.org/spectcl/spectcl.svg
 [buildloc]: https://travis-ci.org/spectcl/spectcl
 [covstatus]: https://coveralls.io/repos/spectcl/spectcl/badge.svg
