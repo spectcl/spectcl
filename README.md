@@ -1,6 +1,6 @@
 # spectcl [![Build Status][buildstatus]][buildloc] [![Coverage Status][covstatus]][covloc] [![Dependencies][depstatus]][deploc] [![NPM][npmbadge]][npmloc] [![Follow Spectcl][twitbadge]][twitloc]
 
-[buildstatus]: https://travis-ci.org/spectcl/spectcl.svg
+[buildstatus]: https://travis-ci.org/spectcl/spectcl.svg?branch=master
 [buildloc]: https://travis-ci.org/spectcl/spectcl
 [covstatus]: https://coveralls.io/repos/spectcl/spectcl/badge.svg
 [covloc]: https://coveralls.io/r/spectcl/spectcl

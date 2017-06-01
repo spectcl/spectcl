@@ -1,10 +1,15 @@
 language: node_js
 
 node_js:
-  - "0.12"
   - 4
   - 5
   - 6
+  - 7
+  - 8
+
+matrix:
+  allow_failures:
+    - node_js: 8
 
 # to use native modules in node 4+, need to add clang or use trusty: https://docs.travis-ci.com/user/languages/javascript-with-nodejs#Node.js-v4-(or-io.js-v3)-compiler-requirements
 #sudo: false
@@ -34,7 +39,7 @@ script:
     - npm run lint && npm test
 
 after_script:
-    - if [[ `node --version` == *v0.12* ]]; then cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
+    - if [[ `node --version` == *v4* ]]; then cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
 
 cache:
   directories:
