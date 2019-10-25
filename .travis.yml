@@ -23,7 +23,7 @@ before_install:
     - npm i -g npm
 
 script:
-    - npm run lint && npm test
+    - npm run lint && npm run coverage
 
 after_success:
     - if [[ `node --version` == *v8* ]]; then npm run coveralls; fi
