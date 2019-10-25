@@ -1,31 +1,19 @@
 language: node_js
 
 node_js:
-  - 4
-  - 5
-  - 6
-  - 7
   - 8
+  - 10
+  - 12
+  - 13
+  - 14
 
 matrix:
   allow_failures:
-    - node_js: 8
+    - node_js: 
+      - 12
+      - 13
+      - 14
 
-# to use native modules in node 4+, need to add clang or use trusty: https://docs.travis-ci.com/user/languages/javascript-with-nodejs#Node.js-v4-(or-io.js-v3)-compiler-requirements
-#sudo: false
-#compiler: clang-3.6
-#env:
-#    - CXX=clang-3.6
-#addons:
-#  apt:
-#    sources:
-#      - llvm-toolchain-precise-3.6
-#      - ubuntu-toolchain-r-test
-#    packages:
-#      - clang-3.6
-#      - g++-4.8
-sudo: required
-dist: trusty
 
 branches:
     except:
@@ -39,7 +27,7 @@ script:
     - npm run lint && npm test
 
 after_script:
-    - if [[ `node --version` == *v4* ]]; then cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
+    - if [[ `node --version` == *v8* ]]; then cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
 
 cache:
   directories:
