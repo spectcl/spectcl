@@ -1,7 +1,7 @@
 {
   "name": "spectcl",
   "description": "Spawns and interacts with child processes using spawn / expect commands",
-  "version": "0.6.3",
+  "version": "0.7.3",
   "author": "Ryan Milbourne <ryan.milbourne@viasat.com>",
   "maintainers": [
     "Greg Cochard <greg@gregcochard.com>",
@@ -22,25 +22,27 @@
     "colors": "1.1.2",
     "coveralls": "^2.11.6",
     "eslint": "^2.1.0",
-    "istanbul": "^0.4.2",
     "jsdoc-to-markdown": "^1.3.1",
     "lodash": "^4.0.1",
     "mocha": "^3.1.0",
     "mock-spawn": "^0.2.6",
+    "nyc": "^14.1.1",
     "pre-git": "^3.2.0",
     "prompt": "^1.0.0",
     "sinon": "^1.16.1"
   },
   "main": "./lib/spectcl",
   "scripts": {
-    "test": "DEBUG=spectcl istanbul cover node_modules/mocha/bin/_mocha",
+    "test": "DEBUG=spectcl mocha",
+    "coverage": "nyc npm run test",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "mocha": "mocha",
     "lint": "eslint lib/*.js test/*.js",
     "docugen": "./docugen.sh",
     "commit": "commit-wizard"
   },
   "engines": {
-    "node": ">=0.12.0"
+    "node": ">=8"
   },
   "license": "MIT",
   "dependencies": {
@@ -64,5 +66,8 @@
         "npm test"
       ]
     }
+  },
+  "release": {
+    "analyzeCommits": "simple-commit-message"
   }
 }

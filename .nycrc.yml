@@ -1,0 +1,11 @@
+{
+    "nyc": {
+        "reporter": [ "lcov", "html", "cobertura" ],
+        "watermarks": {
+            "statements": [80, 90],
+            "lines": [80, 90],
+            "functions": [80, 90],
+            "branches": [80, 90]
+        }
+    }
+}
