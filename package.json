@@ -29,7 +29,7 @@
     "nyc": "^14.1.1",
     "pre-git": "^3.17.1",
     "prompt": "^1.0.0",
-    "sinon": "^1.16.1"
+    "sinon": "^2.1.0"
   },
   "main": "./lib/spectcl",
   "scripts": {
